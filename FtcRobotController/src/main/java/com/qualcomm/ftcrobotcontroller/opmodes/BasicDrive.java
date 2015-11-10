@@ -28,11 +28,7 @@ public class BasicDrive extends OpMode {
     }
 
     @Override
-<<<<<<< HEAD
-    public void loop(){
-=======
     public void loop() {
->>>>>>> origin/master
         float xValue = gamepad1.left_stick_x;
         float yValue = -gamepad1.left_stick_y;
 
