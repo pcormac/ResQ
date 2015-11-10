@@ -29,7 +29,7 @@ public class BasicDrive extends OpMode {
     
     @Override
     public void loop(){
-        float xValue = gamepad1.left_stick_y;
+        float xValue = gamepad1.left_stick_x;
         float yValue = -gamepad1.left_stick_y;
 
         //calc value for each motor
