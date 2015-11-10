@@ -18,7 +18,7 @@ public class BasicDrive extends OpMode {
     DcMotor rightMotor;
 
     @Override
-    public void init(){
+    public void init() {
         //get references to the motors from the hardware map
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
@@ -26,9 +26,13 @@ public class BasicDrive extends OpMode {
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    
+
     @Override
+<<<<<<< HEAD
     public void loop(){
+=======
+    public void loop() {
+>>>>>>> origin/master
         float xValue = gamepad1.left_stick_x;
         float yValue = -gamepad1.left_stick_y;
 
@@ -46,3 +50,22 @@ public class BasicDrive extends OpMode {
 
     }
 }
+
+//
+//y = 1, x = 0
+//        leftMotor = 1, rightMotor = 1
+//
+//y = -1, x = 0
+//        leftMotor = -1, rightMotor = -1
+//
+//y = 0, x = -1
+//        leftMotor = 0, rightMotor = 1
+//
+//y = 0, x = 1
+//        leftMotor = 1, rightMotor = 0
+//
+//y = .5, x = .5
+//        leftMotor = .75, rightMotor = .25
+//
+//        y = -.5, x = -.5
+//        leftMotor = .25, rightMotor = .75
