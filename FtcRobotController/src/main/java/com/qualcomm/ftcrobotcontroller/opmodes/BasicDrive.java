@@ -67,5 +67,5 @@ public class BasicDrive extends OpMode {
 //y = .5, x = .5
 //        leftMotor = .75, rightMotor = .25
 //
-//        y = -.5, x = -.5
+//y = -.5, x = -.5
 //        leftMotor = .25, rightMotor = .75
