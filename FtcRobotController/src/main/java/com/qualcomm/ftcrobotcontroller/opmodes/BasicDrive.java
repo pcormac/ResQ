@@ -12,7 +12,22 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by Cormac on 11/2/2015.
  */
-public class BasicDrive extends OpMode {
+public class BasicDrive extends PushBotTelemetry {
+
+    public BasicDrive ()
+
+    {
+        //
+        // Initialize base classes.
+        //
+        // All via self-construction. //su
+
+        //
+        // Initialize class members.
+        //
+        // All via self-construction.
+
+    } // BasicDrive
 
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -37,13 +52,19 @@ public class BasicDrive extends OpMode {
         float rightPower = yValue - xValue;
 
         //clip range aka set max and min
-        leftPower = Range.clip(leftPower, -1, 1);
-        rightPower = Range.clip(rightPower, -1, 1);
+        //leftPower = Range.clip(leftPower, -1, 1);
+        //rightPower = Range.clip(rightPower, -1, 1);
 
         //set power
+        //float l_left_drive_power = scale_motor_power (-gamepad1.left_stick_y);
+        //float l_right_drive_power = scale_motor_power (-gamepad1.right_stick_y);
+
+        //set_drive_power (leftPower, rightPower);
         leftMotor.setPower(leftPower);
         rightMotor.setPower(rightPower);
 
+        update_telemetry(); // Update common telemetry
+        update_gamepad_telemetry();
     }
 }
 
