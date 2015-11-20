@@ -32,14 +32,20 @@ public class BasicDrive extends PushBotTelemetry {
     DcMotor leftMotor;
     DcMotor rightMotor;
 
+    DcMotor leftArm;
+    DcMotor rightArm;
+
     @Override
     public void init() {
         //get references to the motors from the hardware map
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
+        leftArm = hardwareMap.dcMotor.get("left_arm");
+        rightArm = hardwareMap.dcMotor.get("right_arm");
 
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
@@ -52,16 +58,23 @@ public class BasicDrive extends PushBotTelemetry {
         float rightPower = yValue - xValue;
 
         //clip range aka set max and min
-        //leftPower = Range.clip(leftPower, -1, 1);
-        //rightPower = Range.clip(rightPower, -1, 1);
-
-        //set power
-        //float l_left_drive_power = scale_motor_power (-gamepad1.left_stick_y);
-        //float l_right_drive_power = scale_motor_power (-gamepad1.right_stick_y);
+        leftPower = Range.clip(leftPower, -1, 1);
+        rightPower = Range.clip(rightPower, -1, 1);
 
         //set_drive_power (leftPower, rightPower);
         leftMotor.setPower(leftPower);
         rightMotor.setPower(rightPower);
+
+        if (gamepad2.a)
+        {
+            leftArm.setPower(100);
+            rightArm.setPower(100);
+        }
+        else if (gamepad2.b)
+        {
+            leftArm.setPower(-100);
+            rightArm.setPower(-100);
+        }
 
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
