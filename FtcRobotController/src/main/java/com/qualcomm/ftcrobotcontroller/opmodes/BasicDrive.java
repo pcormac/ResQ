@@ -67,15 +67,26 @@ public class BasicDrive extends PushBotTelemetry {
 
         if (gamepad2.a)
         {
-            leftArm.setPower(100);
-            rightArm.setPower(100);
+            leftArm.setPower(-1.00);
         }
         else if (gamepad2.b)
         {
-            leftArm.setPower(-100);
-            rightArm.setPower(-100);
+            leftArm.setPower(1.00);
         }
-
+        else {
+            leftArm.setPower(0);
+        }
+        if (gamepad2.x)
+        {
+            rightArm.setPower(1.00);
+        }
+        else if (gamepad2.y)
+        {
+            rightArm.setPower(-1.00);
+        }
+        else {
+            rightArm.setPower(0);
+        }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
