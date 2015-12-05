@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 //import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -32,20 +33,22 @@ public class BasicDrive extends PushBotTelemetry {
     DcMotor leftMotor;
     DcMotor rightMotor;
 
-    DcMotor leftArm;
-    DcMotor rightArm;
+
+    DcMotor arm;
+
+    DcMotor wormy;
 
     @Override
     public void init() {
         //get references to the motors from the hardware map
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
-        leftArm = hardwareMap.dcMotor.get("left_arm");
-        rightArm = hardwareMap.dcMotor.get("right_arm");
+        arm = hardwareMap.dcMotor.get("right_arm");
+        wormy = hardwareMap.dcMotor.get("wormy");
 
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotor.Direction.REVERSE);
+        arm.setDirection(DcMotor.Direction.REVERSE);
     }
 
     @Override
@@ -65,27 +68,33 @@ public class BasicDrive extends PushBotTelemetry {
         leftMotor.setPower(leftPower);
         rightMotor.setPower(rightPower);
 
-        if (gamepad2.a)
+        //wormgear
+        if (gamepad1.a)
         {
-            leftArm.setPower(-1.00);
+            wormy.setPower(.25);
         }
-        else if (gamepad2.b)
+        else if (gamepad1.b)
         {
-            leftArm.setPower(1.00);
+            wormy.setPower(-.25);
         }
-        else {
-            leftArm.setPower(0);
+        else
+        {
+            wormy.setPower(0);
         }
         if (gamepad2.x)
         {
-            rightArm.setPower(1.00);
+            arm.setPower(1.00);
         }
         else if (gamepad2.y)
         {
-            rightArm.setPower(-1.00);
+            arm.setPower(-1.00);
         }
         else {
-            rightArm.setPower(0);
+            arm.setPower(0);
+        }
+        if (gamepad2.a)
+        {
+
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
