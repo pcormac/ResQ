@@ -18,10 +18,10 @@ public class BasicAuto extends PushBotTelemetry
     final static int ENCODER_CPR = 1440;
     final static double GEAR_RATIO = 0.5;
     final static double WHEEL_DIAMETER = 20.41;
-    final static double DISTANCE1 = 24;
-    final static double DISTANCE2 = 25;
-    final static double DISTANCE3 = 36;
-    final static double DISTANCE4 = 24;
+    final static double DISTANCE1 = 48; //two tiles
+    final static double DISTANCE2 = 12; //half tile
+    final static double DISTANCE3 = 48; //two tiles
+    final static double DISTANCE4 = 48; //two tiles
 
     final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     final static double ROTATIONS1 = DISTANCE1 / CIRCUMFERENCE;
@@ -93,7 +93,7 @@ public class BasicAuto extends PushBotTelemetry
             case 3:
                 run_using_encoders();
                 set_drive_power(-1f, 1f);
-                if (have_drive_encoders_reached(423, 423))
+                if (have_drive_encoders_reached(COUNTS2, COUNTS2))
                 {
                     set_drive_power (0.0f, 0.0f);
                     reset_encoders();
@@ -103,7 +103,7 @@ public class BasicAuto extends PushBotTelemetry
             case 4:
                 run_using_encoders();
                 set_drive_power(1f, 1f);
-                if (have_drive_encoders_reached(1693, 1693))
+                if (have_drive_encoders_reached(COUNTS3, COUNTS3))
                 {
                     reset_encoders();
 
@@ -115,7 +115,7 @@ public class BasicAuto extends PushBotTelemetry
             case 5:
                 run_using_encoders();
                 set_drive_power(0.875f, 1f);
-                if (have_drive_encoders_reached(1693, 1693))
+                if (have_drive_encoders_reached(COUNTS4, COUNTS4))
                 {
                     reset_encoders();
 
