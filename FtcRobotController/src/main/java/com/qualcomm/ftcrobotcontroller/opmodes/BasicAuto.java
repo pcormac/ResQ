@@ -18,11 +18,21 @@ public class BasicAuto extends PushBotTelemetry
     final static int ENCODER_CPR = 1440;
     final static double GEAR_RATIO = 0.5;
     final static double WHEEL_DIAMETER = 20.41;
-    final static double DISTANCE = 24;
+    final static double DISTANCE1 = 24;
+    final static double DISTANCE2 = 25;
+    final static double DISTANCE3 = 36;
+    final static double DISTANCE4 = 24;
 
     final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-    final static double ROTATIONS = DISTANCE / CIRCUMFERENCE;
-    final static double COUNTS = ENCODER_CPR * ROTATIONS * GEAR_RATIO;
+    final static double ROTATIONS1 = DISTANCE1 / CIRCUMFERENCE;
+    final static double ROTATIONS2 = DISTANCE2 / CIRCUMFERENCE;
+    final static double ROTATIONS3 = DISTANCE3 / CIRCUMFERENCE;
+    final static double ROTATIONS4 = DISTANCE4 / CIRCUMFERENCE;
+
+    final static double COUNTS1 = ENCODER_CPR * ROTATIONS1 * GEAR_RATIO;
+    final static double COUNTS2 = ENCODER_CPR * ROTATIONS2 * GEAR_RATIO;
+    final static double COUNTS3 = ENCODER_CPR * ROTATIONS3 * GEAR_RATIO;
+    final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
     int v_state = 0;
 
@@ -61,7 +71,7 @@ public class BasicAuto extends PushBotTelemetry
                 run_using_encoders();
                 set_drive_power(1.0f,1.0f);
 
-                if (have_drive_encoders_reached(COUNTS, COUNTS))
+                if (have_drive_encoders_reached(COUNTS1, COUNTS1))
                 {
                     reset_encoders();
 
@@ -119,8 +129,7 @@ public class BasicAuto extends PushBotTelemetry
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
-    public void reset_encoders ()
-    {
+    public void reset_encoders () {
         reset_left_drive_encoder();
         reset_right_drive_encoder();
 //        this.leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
