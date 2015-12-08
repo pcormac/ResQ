@@ -113,11 +113,13 @@ public class BasicAuto extends PushBotTelemetry
     }
     public void reset_encoders ()
     {
-        this.leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        this.rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-        this.leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        reset_left_drive_encoder();
+        reset_right_drive_encoder();
+//        this.leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+//        this.rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+//
+//        this.leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+//        this.rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
     }
 
