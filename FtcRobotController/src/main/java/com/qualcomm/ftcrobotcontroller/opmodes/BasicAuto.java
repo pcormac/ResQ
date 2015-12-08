@@ -22,7 +22,7 @@ public class BasicAuto extends PushBotTelemetry
         super.init();
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
-        Reset_Encoders();
+        reset_encoders();
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
 
@@ -32,13 +32,13 @@ public class BasicAuto extends PushBotTelemetry
     @Override public void loop()
     {
 
-        Reset_Encoders();
+        reset_encoders();
 
         switch (v_state)
         {
             case 0:
                 //reset drive encoders
-                Reset_Encoders();
+                reset_encoders();
 
                 // Transition to the next state when this method is called again.
                 //
@@ -55,7 +55,7 @@ public class BasicAuto extends PushBotTelemetry
 
                 if (have_drive_encoders_reached(1693, 1693))
                 {
-                    Reset_Encoders();
+                    reset_encoders();
 
                     set_drive_power(0f, 0f);
 
@@ -78,7 +78,7 @@ public class BasicAuto extends PushBotTelemetry
                 if (have_drive_encoders_reached(423, 423))
                 {
                     set_drive_power (0.0f, 0.0f);
-                    Reset_Encoders();
+                    reset_encoders();
                     v_state++;
                 }
                 break;
@@ -87,7 +87,7 @@ public class BasicAuto extends PushBotTelemetry
                 set_drive_power(1f, 1f);
                 if (have_drive_encoders_reached(1693, 1693))
                 {
-                    Reset_Encoders();
+                    reset_encoders();
 
                     set_drive_power(0f, 0f);
 
@@ -99,7 +99,7 @@ public class BasicAuto extends PushBotTelemetry
                 set_drive_power(0.875f, 1f);
                 if (have_drive_encoders_reached(1693, 1693))
                 {
-                    Reset_Encoders();
+                    reset_encoders();
 
                     set_drive_power(0f, 0f);
 
@@ -111,13 +111,13 @@ public class BasicAuto extends PushBotTelemetry
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
-    public void Reset_Encoders ()
+    public void reset_encoders ()
     {
-        leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        this.leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        this.rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
 
-        leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 
     }
 
