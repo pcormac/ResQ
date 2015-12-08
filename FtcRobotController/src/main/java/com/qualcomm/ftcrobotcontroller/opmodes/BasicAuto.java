@@ -15,6 +15,15 @@ public class BasicAuto extends PushBotTelemetry
     DcMotor leftMotor;
     DcMotor rightMotor;
 
+    final static int ENCODER_CPR = 1440;
+    final static double GEAR_RATIO = 0.5;
+    final static double WHEEL_DIAMETER = 20.41;
+    final static double DISTANCE = 24;
+
+    final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+    final static double ROTATIONS = DISTANCE / CIRCUMFERENCE;
+    final static double COUNTS = ENCODER_CPR * ROTATIONS * GEAR_RATIO;
+
     int v_state = 0;
 
     @Override public void init ()
@@ -50,10 +59,9 @@ public class BasicAuto extends PushBotTelemetry
                 break;
             case 1:
                 run_using_encoders();
-
                 set_drive_power(1.0f,1.0f);
 
-                if (have_drive_encoders_reached(1693, 1693))
+                if (have_drive_encoders_reached(COUNTS, COUNTS))
                 {
                     reset_encoders();
 
