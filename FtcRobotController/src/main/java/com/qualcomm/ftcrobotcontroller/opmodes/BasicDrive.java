@@ -32,11 +32,10 @@ public class BasicDrive extends PushBotTelemetry {
 
     DcMotor leftMotor;
     DcMotor rightMotor;
-
-
     DcMotor arm;
-
     DcMotor wormy;
+    Servo leftServo;
+    Servo rightServo;
 
     @Override
     public void init() {
@@ -45,6 +44,8 @@ public class BasicDrive extends PushBotTelemetry {
         rightMotor = hardwareMap.dcMotor.get("right_drive");
         arm = hardwareMap.dcMotor.get("right_arm");
         wormy = hardwareMap.dcMotor.get("wormy");
+        leftServo = hardwareMap.servo.get("left_servo");
+        rightServo = hardwareMap.servo.get("right_servo");
 
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -56,19 +57,19 @@ public class BasicDrive extends PushBotTelemetry {
         float xValue = gamepad1.left_stick_x;
         float yValue = -gamepad1.left_stick_y;
 
-        //calc value for each motor
+        // calc value for each motor
         float leftPower = yValue + xValue;
         float rightPower = yValue - xValue;
 
-        //clip range aka set max and min
+        // clip range aka set max and min
         leftPower = Range.clip(leftPower, -1, 1);
         rightPower = Range.clip(rightPower, -1, 1);
 
-        //set_drive_power (leftPower, rightPower);
+        // set_drive_power (leftPower, rightPower);
         leftMotor.setPower(leftPower);
         rightMotor.setPower(rightPower);
 
-        //wormgear
+        // wormgear
         if (gamepad1.a)
         {
             wormy.setPower(.25);
@@ -81,6 +82,8 @@ public class BasicDrive extends PushBotTelemetry {
         {
             wormy.setPower(0);
         }
+
+        // arm
         if (gamepad2.x)
         {
             arm.setPower(1.00);
@@ -92,9 +95,11 @@ public class BasicDrive extends PushBotTelemetry {
         else {
             arm.setPower(0);
         }
+
+        // servos
         if (gamepad2.a)
         {
-
+            
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
