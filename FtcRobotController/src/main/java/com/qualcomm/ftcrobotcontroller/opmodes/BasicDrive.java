@@ -50,6 +50,10 @@ public class BasicDrive extends PushBotTelemetry {
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
+        rightServo.setDirection(Servo.Direction.REVERSE);
+
+        leftServo.setPosition(0);
+        rightServo.setPosition(0);
     }
 
     @Override
@@ -99,7 +103,13 @@ public class BasicDrive extends PushBotTelemetry {
         // servos
         if (gamepad2.a)
         {
-            
+            leftServo.setPosition(1);
+            rightServo.setPosition(1);
+        }
+        else
+        {
+            leftServo.setPosition(0);
+            rightServo.setPosition(0);
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
