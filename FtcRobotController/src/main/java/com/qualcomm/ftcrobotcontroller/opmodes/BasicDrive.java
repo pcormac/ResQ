@@ -36,6 +36,7 @@ public class BasicDrive extends PushBotTelemetry {
     DcMotor wormy;
     Servo leftServo;
     Servo rightServo;
+    Servo armServo;
 
     @Override
     public void init() {
@@ -46,7 +47,7 @@ public class BasicDrive extends PushBotTelemetry {
         wormy = hardwareMap.dcMotor.get("wormy");
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
-
+        armServo = hardwareMap.servo.get("arm_servo");
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
@@ -54,6 +55,7 @@ public class BasicDrive extends PushBotTelemetry {
 
         leftServo.setPosition(0);
         rightServo.setPosition(0);
+        armServo.setPosition(0);
     }
 
     @Override
@@ -110,6 +112,16 @@ public class BasicDrive extends PushBotTelemetry {
         {
             leftServo.setPosition(0);
             rightServo.setPosition(0);
+        }
+
+        //arm servo
+        if (gamepad2.b)
+        {
+            armServo.setPosition(1);
+        }
+        else
+        {
+            armServo.setPosition(0);
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
