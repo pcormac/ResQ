@@ -57,6 +57,7 @@ public class BasicAuto extends PushBotTelemetry
     @Override public void init ()
     {
         super.init();
+        //get references to the motors from the hardware map
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
         arm = hardwareMap.dcMotor.get("right_arm");
@@ -70,6 +71,9 @@ public class BasicAuto extends PushBotTelemetry
         arm.setDirection(DcMotor.Direction.REVERSE);
         rightServo.setDirection(Servo.Direction.REVERSE);
 
+        leftServo.setPosition(0);
+        rightServo.setPosition(0);
+        armServo.setPosition(0);
 
         hardwareMap.logDevices();
 
@@ -105,7 +109,7 @@ public class BasicAuto extends PushBotTelemetry
         telemetry.addData("3. z", String.format("%03d", zVal));
         telemetry.addData("4. h", String.format("%03d", heading));
         while (gyro.isCalibrating()) {
-            //sleep(50);
+            Thread.sleep(50);
         }
         reset_encoders();
 
