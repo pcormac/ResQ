@@ -24,7 +24,7 @@ public class BasicAuto extends PushBotTelemetry
     Servo leftServo;
     Servo rightServo;
     Servo armServo;
-    GyroSensor gyro;
+ //   GyroSensor gyro;
 
     final static int ENCODER_CPR = 1440;
     final static double GEAR_RATIO = 0.5;
@@ -45,10 +45,10 @@ public class BasicAuto extends PushBotTelemetry
     final static double COUNTS3 = ENCODER_CPR * ROTATIONS3 * GEAR_RATIO;
     final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
-    int xVal = gyro.rawX();
-    int yVal = gyro.rawY();
-    int zVal = gyro.rawZ();
-    int heading = gyro.getHeading();
+//    int xVal = gyro.rawX();
+//    int yVal = gyro.rawY();
+//    int zVal = gyro.rawZ();
+//    int heading = gyro.getHeading();
 
     int v_state = 0;
 
@@ -65,7 +65,7 @@ public class BasicAuto extends PushBotTelemetry
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
         armServo = hardwareMap.servo.get("arm_servo");
-        gyro = hardwareMap.gyroSensor.get("gyro");
+//        gyro = hardwareMap.gyroSensor.get("gyro");
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
@@ -77,7 +77,7 @@ public class BasicAuto extends PushBotTelemetry
 
         hardwareMap.logDevices();
 
-        gyro.calibrate();
+//        gyro.calibrate();
         //GyroSensor gyro;
         int xVal, yVal, zVal = 0;
         int heading = 0;
@@ -103,14 +103,14 @@ public class BasicAuto extends PushBotTelemetry
         // get the heading info.
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
-        heading = gyro.getHeading();
+//        heading = gyro.getHeading();
         telemetry.addData("1. x", String.format("%03d", xVal));
         telemetry.addData("2. y", String.format("%03d", yVal));
         telemetry.addData("3. z", String.format("%03d", zVal));
-        telemetry.addData("4. h", String.format("%03d", heading));
-        while (gyro.isCalibrating()) {
-            Thread.sleep(50);
-        }
+//        telemetry.addData("4. h", String.format("%03d", heading));
+//        while (gyro.isCalibrating()) {
+//            Thread.sleep(50);
+//        }
         reset_encoders();
 
         switch (v_state)
