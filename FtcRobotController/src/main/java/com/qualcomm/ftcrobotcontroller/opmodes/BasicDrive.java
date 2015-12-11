@@ -124,9 +124,11 @@ public class BasicDrive extends PushBotTelemetry {
         {
             armServo.setPosition(1);
         }
+
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
+
 }
 
 //

@@ -64,12 +64,13 @@ public class BasicAuto extends PushBotTelemetry
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
         armServo = hardwareMap.servo.get("arm_servo");
+        gyro = hardwareMap.gyroSensor.get("gyro");
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
         rightServo.setDirection(Servo.Direction.REVERSE);
 
-        gyro = hardwareMap.gyroSensor.get("gyro");
+
         hardwareMap.logDevices();
 
         gyro.calibrate();
@@ -103,8 +104,7 @@ public class BasicAuto extends PushBotTelemetry
         telemetry.addData("2. y", String.format("%03d", yVal));
         telemetry.addData("3. z", String.format("%03d", zVal));
         telemetry.addData("4. h", String.format("%03d", heading));
-        while (gyro.isCalibrating())
-        {
+        while (gyro.isCalibrating()) {
             //sleep(50);
         }
         reset_encoders();
@@ -188,6 +188,38 @@ public class BasicAuto extends PushBotTelemetry
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
+    }
+    public void update_telemetry ()
+
+    {
+        if (a_warning_generated()) {
+            set_first_message(a_warning_message());
+        }
+        //
+        // Send telemetry data to the driver station.
+        //
+        telemetry.addData
+                ("01"
+                        , "Left Drive: "
+                                + a_left_drive_power()
+                                + ", "
+                                + a_left_encoder_count()
+                );
+        telemetry.addData
+                ("02"
+                        , "Right Drive: "
+                                + a_right_drive_power()
+                                + ", "
+                                + a_right_encoder_count()
+                );
+        telemetry.addData
+                ("03"
+                        , "Left Arm: " + a_left_arm_power()
+                );
+        telemetry.addData("4. x", String.format("%03d", xVal));
+        telemetry.addData("5. y", String.format("%03d", yVal));
+        telemetry.addData("6. z", String.format("%03d", zVal));
+        telemetry.addData("7. h", String.format("%03d", heading));
     }
     public void reset_encoders () {
         reset_left_drive_encoder();
