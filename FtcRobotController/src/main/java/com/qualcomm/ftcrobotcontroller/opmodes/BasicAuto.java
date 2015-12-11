@@ -94,9 +94,9 @@ public class BasicAuto extends PushBotTelemetry
 //    static int[] l_times = new int [3];
 
 
-    //@Override public void loop()
+    @Override public void loop()
 
-    public void runOpMode() throws InterruptedException
+//    public void runOpMode() throws InterruptedException
     {
         // get the x, y, and z values (rate of change of angle).
 
