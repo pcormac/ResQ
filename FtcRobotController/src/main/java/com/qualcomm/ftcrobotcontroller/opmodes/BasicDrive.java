@@ -55,7 +55,7 @@ public class BasicDrive extends PushBotTelemetry {
 
         leftServo.setPosition(0);
         rightServo.setPosition(0);
-        armServo.setPosition(0);
+        armServo.setPosition(1);
     }
 
     @Override
@@ -70,6 +70,7 @@ public class BasicDrive extends PushBotTelemetry {
         // clip range aka set max and min
         leftPower = Range.clip(leftPower, -1, 1);
         rightPower = Range.clip(rightPower, -1, 1);
+
 
         // set_drive_power (leftPower, rightPower);
         leftMotor.setPower(leftPower);
@@ -117,11 +118,11 @@ public class BasicDrive extends PushBotTelemetry {
         //arm servo
         if (gamepad2.b)
         {
-            armServo.setPosition(1);
+            armServo.setPosition(0);
         }
         else
         {
-            armServo.setPosition(0);
+            armServo.setPosition(1);
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
