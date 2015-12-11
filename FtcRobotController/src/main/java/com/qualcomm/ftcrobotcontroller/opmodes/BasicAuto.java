@@ -104,9 +104,9 @@ public class BasicAuto extends PushBotTelemetry
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
 //        heading = gyro.getHeading();
-        //telemetry.addData("1. x", String.format("%03d", xVal));
-        //telemetry.addData("2. y", String.format("%03d", yVal));
-        //telemetry.addData("3. z", String.format("%03d", zVal));
+        telemetry.addData("1. x", String.format("%03d", xVal));
+        telemetry.addData("2. y", String.format("%03d", yVal));
+        telemetry.addData("3. z", String.format("%03d", zVal));
 //        telemetry.addData("4. h", String.format("%03d", heading));
 //        while (gyro.isCalibrating()) {
 //            Thread.sleep(50);
@@ -176,7 +176,7 @@ public class BasicAuto extends PushBotTelemetry
                     v_state++;
                 }
                 break;
-            /*case 6:
+            case 6:
                 run_using_encoders();
                 set_drive_power(0.875f, 1f);
                 if (xVal == 45)
@@ -188,7 +188,7 @@ public class BasicAuto extends PushBotTelemetry
                     v_state++;
                 }
                 break;
-                */
+
         }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
@@ -216,10 +216,14 @@ public class BasicAuto extends PushBotTelemetry
                                 + ", "
                                 + a_right_encoder_count()
                 );
-        //telemetry.addData("4. x", String.format("%03d", xVal));
-        //telemetry.addData("5. y", String.format("%03d", yVal));
-        //telemetry.addData("6. z", String.format("%03d", zVal));
-        //telemetry.addData("7. h", String.format("%03d", heading));
+        telemetry.addData
+                ("03"
+                        , "Left Arm: " + a_left_arm_power()
+                );
+        telemetry.addData("4. x", String.format("%03d", xVal));
+        telemetry.addData("5. y", String.format("%03d", yVal));
+        telemetry.addData("6. z", String.format("%03d", zVal));
+        telemetry.addData("7. h", String.format("%03d", heading));
     }
     public void reset_encoders () {
         reset_left_drive_encoder();
