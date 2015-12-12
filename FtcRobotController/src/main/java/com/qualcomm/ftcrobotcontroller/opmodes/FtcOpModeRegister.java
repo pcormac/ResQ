@@ -65,6 +65,8 @@ public class FtcOpModeRegister implements OpModeRegister {
     //manager.register ("PushBotAutoSenors",PushBotAutoSensors.class);
     //manager.register ("PushBotManual", PushBotManual.class);
     manager.register ("BasicDrive", BasicDrive.class);
+    manager.register("NewAuto", NewAuto.class);
+    manager.register("MRGyroTest", MRGyroTest.class);
 
 
     /*

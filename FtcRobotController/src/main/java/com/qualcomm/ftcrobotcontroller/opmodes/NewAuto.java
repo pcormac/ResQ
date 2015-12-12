@@ -1,6 +1,8 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -14,9 +16,9 @@ import com.qualcomm.robotcore.util.TypeConversion;
 /**
  * Created by Cormac on 12/3/2015.
  */
-public class BasicAuto extends PushBotTelemetry
+public class NewAuto extends PushBotTelemetry
 {
-    public BasicAuto () {}
+    public NewAuto() {}
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor arm;
@@ -24,9 +26,9 @@ public class BasicAuto extends PushBotTelemetry
     Servo leftServo;
     Servo rightServo;
     Servo armServo;
- //   GyroSensor gyro;
+    GyroSensor sensorGyro;
 
-    final static int ENCODER_CPR = 1;
+    final static int ENCODER_CPR = 1440;
     final static double GEAR_RATIO = 0.5;
     final static double WHEEL_DIAMETER = 20.41;
     final static double DISTANCE1 = 8; //two tiles
@@ -45,16 +47,11 @@ public class BasicAuto extends PushBotTelemetry
     final static double COUNTS3 = ENCODER_CPR * ROTATIONS3 * GEAR_RATIO;
     final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
-//    int xVal = gyro.rawX();
-//    int yVal = gyro.rawY();
-//    int zVal = gyro.rawZ();
-//    int heading = gyro.getHeading();
-
-    int v_state = 0;
+    private int v_state = 0;
 
 
 
-    @Override public void init ()
+    @Override public void start ()
     {
         super.init();
         //get references to the motors from the hardware map
@@ -65,11 +62,13 @@ public class BasicAuto extends PushBotTelemetry
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
         armServo = hardwareMap.servo.get("arm_servo");
-//        gyro = hardwareMap.gyroSensor.get("gyro");
+        sensorGyro = hardwareMap.gyroSensor.get("gyro");
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
         rightServo.setDirection(Servo.Direction.REVERSE);
+        leftMotor.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        rightMotor.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
 
         leftServo.setPosition(0);
         rightServo.setPosition(0);
@@ -77,10 +76,7 @@ public class BasicAuto extends PushBotTelemetry
 
         hardwareMap.logDevices();
 
-//        gyro.calibrate();
-        //GyroSensor gyro;
-        int xVal, yVal, zVal = 0;
-        int heading = 0;
+
 
         leftServo.setPosition(0);
         rightServo.setPosition(0);
@@ -93,40 +89,59 @@ public class BasicAuto extends PushBotTelemetry
     }
 
 
-    @Override public void loop()
+    @Override public void loop ()
 
 //    public void runOpMode() throws InterruptedException
     {
         // get the x, y, and z values (rate of change of angle).
-
+        sensorGyro.calibrate();
+        int xVal, yVal, zVal = 0;
+        int heading = 0;
+        xVal = sensorGyro.rawX();
+        xVal = sensorGyro.rawX();
+        yVal = sensorGyro.rawY();
+        zVal = sensorGyro.rawZ();
         // get the heading info.
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
-//        heading = gyro.getHeading();
-//        telemetry.addData("1. x", String.format("%03d", xVal));
-//        telemetry.addData("2. y", String.format("%03d", yVal));
-//        telemetry.addData("3. z", String.format("%03d", zVal));
-//        telemetry.addData("4. h", String.format("%03d", heading));
+        heading = sensorGyro.getHeading();
+        telemetry.addData("1. x", String.format("%03d", xVal));
+        telemetry.addData("2. y", String.format("%03d", yVal));
+        telemetry.addData("3. z", String.format("%03d", zVal));
+        telemetry.addData("4. h", String.format("%03d", heading));
 //        while (gyro.isCalibrating()) {
-//            Thread.sleep(50);
+//            try {
+//                Thread.sleep(50);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 //        }
-        reset_encoders();
-
         switch (v_state)
+
+
+
         {
             case 0:
                 //reset drive encoders
                 reset_encoders();
-
+                if (have_drive_encoders_reset())
+                {
+                    telemetry.addData("Case 0", "It worked!");
+                }
+                else
+                {
+                    telemetry.addData("Case 0", "Oh no!");
+                }
+                run_using_encoders();
                 // Transition to the next state when this method is called again.
                 v_state++;
 
                 break;
             case 1:
-                run_using_encoders();
+                telemetry.addData("Case 1", "Hello, World!");
                 set_drive_power(1.0f,1.0f);
 
-                if (a_left_encoder_count() >= COUNTS1 && a_right_encoder_count() >= COUNTS1)
+                if (have_drive_encoders_reached(COUNTS1, COUNTS1))
                 {
                     reset_encoders();
 
@@ -136,16 +151,19 @@ public class BasicAuto extends PushBotTelemetry
                 }
                 break;
             case 2:
+                telemetry.addData("Case 2", "Hello, World!");
                 if (have_drive_encoders_reset())
                 {
                     v_state++;
                 }
                 break;
             case 3:
+                telemetry.addData("Case 3", "Hello, World!");
                 armServo.setPosition(1);
                 v_state++;
                 break;
             case 4:
+                telemetry.addData("Case 4", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(-1f, 1f);
                 if (have_drive_encoders_reached(COUNTS2, COUNTS2))
@@ -156,6 +174,7 @@ public class BasicAuto extends PushBotTelemetry
                 }
                 break;
             case 5:
+                telemetry.addData("Case 5", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(1f, 1f);
                 if (have_drive_encoders_reached(COUNTS3, COUNTS3))
@@ -168,19 +187,22 @@ public class BasicAuto extends PushBotTelemetry
                 }
                 break;
             case 6:
+                telemetry.addData("Case 6", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(0.875f, 1f);
-//                if (xVal == 45)
-//                {
-//                    reset_encoders();
-//
-//                    set_drive_power(0f, 0f);
-//
-//                    v_state++;
-//                }
+                if (xVal == 45)
+                {
+                    reset_encoders();
+                    set_drive_power(0f, 0f);
+                    v_state++;
+                }
                 break;
 
         }
+        telemetry.addData("4. x", String.format("%03d", xVal));
+        telemetry.addData("5. y", String.format("%03d", yVal));
+        telemetry.addData("6. z", String.format("%03d", zVal));
+        telemetry.addData("7. h", String.format("%03d", heading));
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
@@ -206,10 +228,6 @@ public class BasicAuto extends PushBotTelemetry
                                 + a_right_drive_power()
                                 + ", "
                                 + a_right_encoder_count()
-                );
-        telemetry.addData
-                ("03"
-                        , "Left Arm: " + a_left_arm_power()
                 );
 //        telemetry.addData("4. x", String.format("%03d", xVal));
 //        telemetry.addData("5. y", String.format("%03d", yVal));
