@@ -48,10 +48,11 @@ public class NewAuto extends PushBotHardware
     final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
     private int v_state = 0;
-    private int xVal;
-    private int yVal;
-    private int zVal;
-    private int heading;
+    private double xVal;
+    private double yVal;
+    private double zVal;
+    private double heading;
+    private double rotation = 0;
 
 
 
@@ -88,19 +89,20 @@ public class NewAuto extends PushBotHardware
     {
         // get the x, y, and z values (rate of change of angle).
         sensorGyro.calibrate();
-        xVal = yVal = zVal = 0;
-        heading = 0;
         xVal = sensorGyro.rawX();
         yVal = sensorGyro.rawY();
         zVal = sensorGyro.rawZ();
+        rotation = sensorGyro.getRotation();
+
         // get the heading info.
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
         heading = sensorGyro.getHeading();
-        telemetry.addData("1. x", String.format("%03d", xVal));
-        telemetry.addData("2. y", String.format("%03d", yVal));
-        telemetry.addData("3. z", String.format("%03d", zVal));
-        telemetry.addData("4. h", String.format("%03d", heading));
+        telemetry.addData("x",  xVal);
+        telemetry.addData("y", yVal);
+        telemetry.addData("z", zVal);
+        telemetry.addData("h", heading);
+        telemetry.addData("r", rotation);
 //        while (gyro.isCalibrating()) {
 //            try {
 //                Thread.sleep(50);
@@ -202,10 +204,6 @@ public class NewAuto extends PushBotHardware
                 v_state++;
                 break;
         }
-        telemetry.addData("4. x", String.format("%03d", xVal));
-        telemetry.addData("5. y", String.format("%03d", yVal));
-        telemetry.addData("6. z", String.format("%03d", zVal));
-        telemetry.addData("7. h", String.format("%03d", heading));
         telemetry.addData("Status", "" + v_state);
         if (v_state >= 7)
         {
