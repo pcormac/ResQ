@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.TypeConversion;
 /**
  * Created by Cormac on 12/3/2015.
  */
-public class NewAuto extends PushBotTelemetry
+public class NewAuto extends PushBotHardware
 {
     public NewAuto() {}
     DcMotor leftMotor;
@@ -31,10 +31,10 @@ public class NewAuto extends PushBotTelemetry
     final static int ENCODER_CPR = 1440;
     final static double GEAR_RATIO = 0.5;
     final static double WHEEL_DIAMETER = 20.41;
-    final static double DISTANCE1 = 8; //two tiles
-    final static double DISTANCE2 = 2; //half tile
-    final static double DISTANCE3 = 8; //two tiles
-    final static double DISTANCE4 = 8; //two tiles
+    final static double DISTANCE1 = 48; //two tiles
+    final static double DISTANCE2 = 12; //half tile
+    final static double DISTANCE3 = 48; //two tiles
+    final static double DISTANCE4 = 48; //two tiles
 
     final static double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     final static double ROTATIONS1 = DISTANCE1 / CIRCUMFERENCE;
@@ -48,6 +48,10 @@ public class NewAuto extends PushBotTelemetry
     final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
     private int v_state = 0;
+    private int xVal;
+    private int yVal;
+    private int zVal;
+    private int heading;
 
 
 
@@ -72,32 +76,20 @@ public class NewAuto extends PushBotTelemetry
 
         leftServo.setPosition(0);
         rightServo.setPosition(0);
-        armServo.setPosition(0);
+        //armServo.setPosition(0);
 
         hardwareMap.logDevices();
-
-
-
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
-        armServo.setPosition(0);
         reset_encoders();
-
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
-
     }
-
-
     @Override public void loop ()
-
 //    public void runOpMode() throws InterruptedException
     {
         // get the x, y, and z values (rate of change of angle).
         sensorGyro.calibrate();
-        int xVal, yVal, zVal = 0;
-        int heading = 0;
-        xVal = sensorGyro.rawX();
+        xVal = yVal = zVal = 0;
+        heading = 0;
         xVal = sensorGyro.rawX();
         yVal = sensorGyro.rawY();
         zVal = sensorGyro.rawZ();
@@ -118,8 +110,6 @@ public class NewAuto extends PushBotTelemetry
 //        }
         switch (v_state)
 
-
-
         {
             case 0:
                 //reset drive encoders
@@ -137,19 +127,26 @@ public class NewAuto extends PushBotTelemetry
                 v_state++;
 
                 break;
+//            case 1:
+//                telemetry.addData("Case 1", "Hello, World!");
+//                set_drive_power(1.0f,1.0f);
+//
+//                if (have_drive_encoders_reached(COUNTS1, COUNTS1))
+//                {
+//                    reset_encoders();
+//
+//                    set_drive_power(0f, 0f);
+//
+//                    v_state++;
+//                }
+//                break;
             case 1:
-                telemetry.addData("Case 1", "Hello, World!");
-                set_drive_power(1.0f,1.0f);
-
-                if (have_drive_encoders_reached(COUNTS1, COUNTS1))
+                telemetry.addData("Case 1", "Finally");
+                if (drive_using_encoders(1.0f, 1.0f, COUNTS1, COUNTS1))
                 {
-                    reset_encoders();
-
-                    set_drive_power(0f, 0f);
-
                     v_state++;
                 }
-                break;
+
             case 2:
                 telemetry.addData("Case 2", "Hello, World!");
                 if (have_drive_encoders_reset())
@@ -189,20 +186,31 @@ public class NewAuto extends PushBotTelemetry
             case 6:
                 telemetry.addData("Case 6", "Hello, World!");
                 run_using_encoders();
+                set_drive_power(0f, 0f);
+                sensorGyro.calibrate();
                 set_drive_power(0.875f, 1f);
-                if (xVal == 45)
+                if (xVal >= 45)
                 {
                     reset_encoders();
                     set_drive_power(0f, 0f);
                     v_state++;
                 }
                 break;
-
+            case 7:
+                run_using_encoders();
+                set_drive_power(0f, 0f);
+                v_state++;
+                break;
         }
         telemetry.addData("4. x", String.format("%03d", xVal));
         telemetry.addData("5. y", String.format("%03d", yVal));
         telemetry.addData("6. z", String.format("%03d", zVal));
         telemetry.addData("7. h", String.format("%03d", heading));
+        telemetry.addData("Status", "" + v_state);
+        if (v_state >= 7)
+        {
+            telemetry.addData("Status", "Done");
+        }
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
@@ -229,10 +237,20 @@ public class NewAuto extends PushBotTelemetry
                                 + ", "
                                 + a_right_encoder_count()
                 );
-//        telemetry.addData("4. x", String.format("%03d", xVal));
-//        telemetry.addData("5. y", String.format("%03d", yVal));
-//        telemetry.addData("6. z", String.format("%03d", zVal));
-//        telemetry.addData("7. h", String.format("%03d", heading));
+        telemetry.addData("1. x", String.format("%03d", xVal));
+        telemetry.addData("2. y", String.format("%03d", yVal));
+        telemetry.addData("3. z", String.format("%03d", zVal));
+        telemetry.addData("4. h", String.format("%03d", heading));
+
+    }
+    public void update_gamepad_telemetry ()
+
+    {
+        //
+        // Send telemetry data concerning gamepads to the driver station.
+        //
+        telemetry.addData("03", "GP1 Y: " + -gamepad1.left_stick_y);
+        telemetry.addData("04", "GP1 X: " + -gamepad1.right_stick_y);
     }
     public void reset_encoders () {
         reset_left_drive_encoder();
@@ -242,6 +260,12 @@ public class NewAuto extends PushBotTelemetry
 //
 //        this.leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
 //        this.rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+
+    }
+    public void set_first_message (String p_message)
+
+    {
+        telemetry.addData("00", p_message);
 
     }
 

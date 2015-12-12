@@ -67,7 +67,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register ("BasicDrive", BasicDrive.class);
     manager.register("NewAuto", NewAuto.class);
     manager.register("MRGyroTest", MRGyroTest.class);
-
+    manager.register("AlteredGyro", AlteredGyro.class);
 
     /*
      * Uncomment any of the following lines if you want to register an op mode.
