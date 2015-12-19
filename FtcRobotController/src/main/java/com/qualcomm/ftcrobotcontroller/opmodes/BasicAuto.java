@@ -136,16 +136,10 @@ public class BasicAuto extends PushBotTelemetry
                 }
                 break;
             case 2:
-                if (have_drive_encoders_reset())
-                {
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
                     v_state++;
-                }
                 break;
             case 3:
-                armServo.setPosition(1);
-                v_state++;
-                break;
-            case 4:
                 run_using_encoders();
                 set_drive_power(-1f, 1f);
                 if (have_drive_encoders_reached(COUNTS2, COUNTS2))
@@ -154,6 +148,10 @@ public class BasicAuto extends PushBotTelemetry
                     reset_encoders();
                     v_state++;
                 }
+                break;
+            case 4:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
                 break;
             case 5:
                 run_using_encoders();
@@ -168,6 +166,10 @@ public class BasicAuto extends PushBotTelemetry
                 }
                 break;
             case 6:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 7:
                 run_using_encoders();
                 set_drive_power(0.875f, 1f);
 //                if (xVal == 45)
@@ -178,6 +180,10 @@ public class BasicAuto extends PushBotTelemetry
 //
 //                    v_state++;
 //                }
+                break;
+            case 8:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
                 break;
 
         }

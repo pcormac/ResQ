@@ -2,23 +2,15 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.ftccommon.DbgLog;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.TypeConversion;
+import com.qualcomm.robotcore.hardware.Servo;
+
 /**
  * Created by Cormac on 12/3/2015.
  */
-public class NewAuto extends PushBotHardware
+public class TargetAuto extends PushBotHardware
 {
-    public NewAuto() {}
+    public TargetAuto() {}
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor arm;
@@ -48,14 +40,14 @@ public class NewAuto extends PushBotHardware
     final static double COUNTS4 = ENCODER_CPR * ROTATIONS4 * GEAR_RATIO;
 
     private int v_state = 0;
-    private double xVal;
-    private double yVal;
-    private double zVal;
-    private double heading;
-    private double rotation = 0;
+    private int xVal;
+    private int yVal;
+    private int zVal;
+    private int heading;
 
-    private long leftEnc;
-    private long rightEnc;
+    private int xVal1;
+    private int xVal2;
+
 
 
     @Override public void start ()
@@ -91,20 +83,19 @@ public class NewAuto extends PushBotHardware
     {
         // get the x, y, and z values (rate of change of angle).
         sensorGyro.calibrate();
+        xVal = yVal = zVal = 0;
+        heading = 0;
         xVal = sensorGyro.rawX();
         yVal = sensorGyro.rawY();
         zVal = sensorGyro.rawZ();
-        //rotation = sensorGyro.getRotation();
-
         // get the heading info.
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
         heading = sensorGyro.getHeading();
-        telemetry.addData("x",  xVal);
-        telemetry.addData("y", yVal);
-        telemetry.addData("z", zVal);
-        telemetry.addData("h", heading);
-        telemetry.addData("r", rotation);
+        telemetry.addData("1. x", String.format("%03d", xVal));
+        telemetry.addData("2. y", String.format("%03d", yVal));
+        telemetry.addData("3. z", String.format("%03d", zVal));
+        telemetry.addData("4. h", String.format("%03d", heading));
 //        while (gyro.isCalibrating()) {
 //            try {
 //                Thread.sleep(50);
@@ -121,8 +112,6 @@ public class NewAuto extends PushBotHardware
                 if (have_drive_encoders_reset())
                 {
                     telemetry.addData("Case 0", "It worked!");
-                    v_state++;
-                    break;
                 }
                 else
                 {
@@ -130,7 +119,9 @@ public class NewAuto extends PushBotHardware
                 }
                 run_using_encoders();
                 // Transition to the next state when this method is called again.
+                v_state++;
 
+                break;
 //            case 1:
 //                telemetry.addData("Case 1", "Hello, World!");
 //                set_drive_power(1.0f,1.0f);
@@ -144,75 +135,69 @@ public class NewAuto extends PushBotHardware
 //                    v_state++;
 //                }
 //                break;
-//            case 1:
-//                telemetry.addData("Case 1", "Finally");
-//                if (drive_using_encoders(1.0f, 1.0f, COUNTS1, COUNTS1)) {
-//                    v_state++;
-//                    break;
-//                }
             case 1:
                 telemetry.addData("Case 1", "Finally");
-                leftEnc = leftMotor.getCurrentPosition();
-                rightEnc = rightMotor.getCurrentPosition();
-                while (leftMotor.getCurrentPosition() - leftEnc < COUNTS1 && rightMotor.getCurrentPosition() - rightEnc < COUNTS1){
-                    leftMotor.setPower(1);
-                    rightMotor.setPower(1);
-                }
+
+                leftMotor.setTargetPosition((int) 1693);
+                rightMotor.setTargetPosition((int) 1693);
+
+                leftMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+                rightMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+                set_drive_power(1.0f, 1.0f);
+                reset_drive_encoders();
+                v_state++;
+                break;
+
             case 2:
                 telemetry.addData("Case 2", "Hello, World!");
+                reset_drive_encoders();
                 if (have_drive_encoders_reset())
                 {
                     v_state++;
-                    break;
                 }
+                break;
             case 3:
                 telemetry.addData("Case 3", "Hello, World!");
-                armServo.setPosition(1);
                 v_state++;
                 break;
             case 4:
                 telemetry.addData("Case 4", "Hello, World!");
-                run_using_encoders();
-                set_drive_power(-1f, 1f);
-                if (have_drive_encoders_reached(COUNTS2, COUNTS2))
-                {
-                    set_drive_power (0.0f, 0.0f);
-                    reset_encoders();
-                    v_state++;
-                    break;
-                }
+                leftMotor.setTargetPosition((int) COUNTS2);
+                rightMotor.setTargetPosition((int) COUNTS2);
+
+                leftMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+                rightMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+                set_drive_power(-1.0f, 1.0f);
+
+                v_state++;
+                break;
             case 5:
                 telemetry.addData("Case 5", "Hello, World!");
-                run_using_encoders();
+                leftMotor.setTargetPosition((int) COUNTS3);
+                rightMotor.setTargetPosition((int) COUNTS3);
+
+                leftMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+                rightMotor.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
                 set_drive_power(1f, 1f);
-                if (have_drive_encoders_reached(COUNTS3, COUNTS3))
-                {
-                    reset_encoders();
 
-                    set_drive_power(0f, 0f);
-
-                    v_state++;
-                    break;
-                }
+                v_state++;
+                break;
             case 6:
                 telemetry.addData("Case 6", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(0f, 0f);
-                sensorGyro.calibrate();
-                set_drive_power(0.875f, 1f);
-                if (xVal >= 45)
-                {
-                    reset_encoders();
-                    set_drive_power(0f, 0f);
-                    v_state++;
-                    break;
-                }
+                v_state++;
+                break;
             case 7:
                 run_using_encoders();
                 set_drive_power(0f, 0f);
                 v_state++;
                 break;
         }
+        telemetry.addData("4. x", String.format("%03d", xVal));
+        telemetry.addData("5. y", String.format("%03d", yVal));
+        telemetry.addData("6. z", String.format("%03d", zVal));
+        telemetry.addData("7. h", String.format("%03d", heading));
         telemetry.addData("Status", "" + v_state);
         if (v_state >= 7)
         {
@@ -244,6 +229,11 @@ public class NewAuto extends PushBotHardware
                                 + ", "
                                 + a_right_encoder_count()
                 );
+        telemetry.addData("1. x", String.format("%03d", xVal));
+        telemetry.addData("2. y", String.format("%03d", yVal));
+        telemetry.addData("3. z", String.format("%03d", zVal));
+        telemetry.addData("4. h", String.format("%03d", heading));
+
     }
     public void update_gamepad_telemetry ()
 
