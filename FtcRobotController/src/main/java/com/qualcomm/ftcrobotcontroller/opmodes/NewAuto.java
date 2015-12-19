@@ -232,7 +232,7 @@ public class NewAuto extends PushBotHardware
                 break;
         }
         telemetry.addData("Status", "" + v_state);
-        if (v_state >= 7)
+        if (v_state >= 12)
         {
             telemetry.addData("Status", "Done");
         }
