@@ -94,17 +94,15 @@ public class NewAuto extends PushBotHardware
         xVal = sensorGyro.rawX();
         yVal = sensorGyro.rawY();
         zVal = sensorGyro.rawZ();
-        //rotation = sensorGyro.getRotation();
-
         // get the heading info.
         // the Modern Robotics' gyro sensor keeps
         // track of the current heading for the Z axis only.
         heading = sensorGyro.getHeading();
+
         telemetry.addData("x",  xVal);
         telemetry.addData("y", yVal);
         telemetry.addData("z", zVal);
         telemetry.addData("h", heading);
-        telemetry.addData("r", rotation);
 //        while (gyro.isCalibrating()) {
 //            try {
 //                Thread.sleep(50);
@@ -159,19 +157,27 @@ public class NewAuto extends PushBotHardware
                     rightMotor.setPower(1);
                 }
             case 2:
-                telemetry.addData("Case 2", "Hello, World!");
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 3:
+                telemetry.addData("Case 3", "Hello, World!");
                 if (have_drive_encoders_reset())
                 {
                     v_state++;
                     break;
                 }
-            case 3:
-                telemetry.addData("Case 3", "Hello, World!");
+            case 4:
+                telemetry.addData("Case 4", "Hello, World!");
                 armServo.setPosition(1);
                 v_state++;
                 break;
-            case 4:
-                telemetry.addData("Case 4", "Hello, World!");
+            case 5:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 6:
+                telemetry.addData("Case 6", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(-1f, 1f);
                 if (have_drive_encoders_reached(COUNTS2, COUNTS2))
@@ -181,8 +187,12 @@ public class NewAuto extends PushBotHardware
                     v_state++;
                     break;
                 }
-            case 5:
-                telemetry.addData("Case 5", "Hello, World!");
+            case 7:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 8:
+                telemetry.addData("Case 8", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(1f, 1f);
                 if (have_drive_encoders_reached(COUNTS3, COUNTS3))
@@ -194,8 +204,12 @@ public class NewAuto extends PushBotHardware
                     v_state++;
                     break;
                 }
-            case 6:
-                telemetry.addData("Case 6", "Hello, World!");
+            case 9:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 10:
+                telemetry.addData("Case 10", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(0f, 0f);
                 sensorGyro.calibrate();
@@ -207,7 +221,11 @@ public class NewAuto extends PushBotHardware
                     v_state++;
                     break;
                 }
-            case 7:
+            case 11:
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                    v_state++;
+                break;
+            case 12:
                 run_using_encoders();
                 set_drive_power(0f, 0f);
                 v_state++;
@@ -244,6 +262,10 @@ public class NewAuto extends PushBotHardware
                                 + ", "
                                 + a_right_encoder_count()
                 );
+        telemetry.addData("4. x", xVal);
+        telemetry.addData("5. y", yVal);
+        telemetry.addData("6. z", zVal);
+        telemetry.addData("7. h", heading);
     }
     public void update_gamepad_telemetry ()
 
