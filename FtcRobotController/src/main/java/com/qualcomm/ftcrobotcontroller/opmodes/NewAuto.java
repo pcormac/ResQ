@@ -55,7 +55,7 @@ public class NewAuto extends PushBotHardware
         //get references to the motors from the hardware map
         leftMotor = hardwareMap.dcMotor.get("left_drive");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
-        arm = hardwareMap.dcMotor.get("right_arm");
+        arm = hardwareMap.dcMotor.get("arm");
         wormy = hardwareMap.dcMotor.get("wormy");
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
