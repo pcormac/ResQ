@@ -110,6 +110,13 @@ public class NewAuto extends PushBotHardware
 //                e.printStackTrace();
 //            }
 //        }
+        try {
+            Thread.sleep(10000);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         switch (v_state)
 
         {
@@ -129,25 +136,7 @@ public class NewAuto extends PushBotHardware
                 run_using_encoders();
                 // Transition to the next state when this method is called again.
 
-//            case 1:
 //                telemetry.addData("Case 1", "Hello, World!");
-//                set_drive_power(1.0f,1.0f);
-//
-//                if (have_drive_encoders_reached(COUNTS1, COUNTS1))
-//                {
-//                    reset_encoders();
-//
-//                    set_drive_power(0f, 0f);
-//
-//                    v_state++;
-//                }
-//                break;
-//            case 1:
-//                telemetry.addData("Case 1", "Finally");
-//                if (drive_using_encoders(1.0f, 1.0f, COUNTS1, COUNTS1)) {
-//                    v_state++;
-//                    break;
-//                }
             case 1:
                 telemetry.addData("Case 1", "Finally");
                 leftEnc = leftMotor.getCurrentPosition();
