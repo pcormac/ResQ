@@ -3,16 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.ftccommon.DbgLog;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.util.RobotLog;
-import com.qualcomm.robotcore.util.TypeConversion;
 /**
  * Created by Cormac on 12/3/2015.
  */
@@ -29,7 +20,7 @@ public class NewAuto extends PushBotHardware
     GyroSensor sensorGyro;
 
     final static int ENCODER_CPR = 1440;
-    final static double GEAR_RATIO = 0.5;
+    final static double GEAR_RATIO = 2;
     final static double WHEEL_DIAMETER = 20.41;
     final static double DISTANCE1 = 48; //two tiles
     final static double DISTANCE2 = 12; //half tile
@@ -52,7 +43,7 @@ public class NewAuto extends PushBotHardware
     private double yVal;
     private double zVal;
     private double heading;
-    private double rotation = 0;
+    //private double rotation = 0;
 
     private long leftEnc;
     private long rightEnc;
@@ -111,13 +102,13 @@ public class NewAuto extends PushBotHardware
 //                e.printStackTrace();
 //            }
 //        }
-        try {
-            Thread.sleep(10000);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(10000);
+//        }
+//        catch (InterruptedException e)
+//        {
+//            e.printStackTrace();
+//        }
         switch (v_state)
 
         {
@@ -230,7 +221,6 @@ public class NewAuto extends PushBotHardware
         update_gamepad_telemetry();
     }
     public void update_telemetry ()
-
     {
         if (a_warning_generated()) {
             set_first_message(a_warning_message());
