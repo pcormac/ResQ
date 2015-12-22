@@ -83,6 +83,7 @@ public class NewAuto extends PushBotHardware
 
         hardwareMap.logDevices();
         reset_encoders();
+        set_first_message("hi");
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }
