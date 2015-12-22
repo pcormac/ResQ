@@ -119,7 +119,6 @@ public class NewAuto extends PushBotHardware
                 {
                     telemetry.addData("Case 0", "It worked!");
                     v_state++;
-                    break;
                 }
                 else
                 {
@@ -129,6 +128,7 @@ public class NewAuto extends PushBotHardware
                 // Transition to the next state when this method is called again.
 
 //                telemetry.addData("Case 1", "Hello, World!");
+                break;
             case 1:
                 telemetry.addData("Case 1", "Finally");
                 leftEnc = leftMotor.getCurrentPosition();
@@ -137,57 +137,57 @@ public class NewAuto extends PushBotHardware
                     leftMotor.setPower(1);
                     rightMotor.setPower(1);
                 }
+                break;
             case 2:
-                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0) {
                     v_state++;
+                }
                 break;
             case 3:
                 telemetry.addData("Case 3", "Hello, World!");
-                if (have_drive_encoders_reset())
-                {
+                if (have_drive_encoders_reset()) {
                     v_state++;
-                    break;
                 }
+                break;
             case 4:
                 telemetry.addData("Case 4", "Hello, World!");
                 armServo.setPosition(1);
                 v_state++;
                 break;
             case 5:
-                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0) {
                     v_state++;
+                }
                 break;
             case 6:
                 telemetry.addData("Case 6", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(-1f, 1f);
-                if (have_drive_encoders_reached(COUNTS2, COUNTS2))
-                {
+                if (have_drive_encoders_reached(COUNTS2, COUNTS2)) {
                     set_drive_power (0.0f, 0.0f);
                     reset_encoders();
                     v_state++;
-                    break;
                 }
+                break;
             case 7:
-                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0) {
                     v_state++;
+                }
                 break;
             case 8:
                 telemetry.addData("Case 8", "Hello, World!");
                 run_using_encoders();
                 set_drive_power(1f, 1f);
-                if (have_drive_encoders_reached(COUNTS3, COUNTS3))
-                {
+                if (have_drive_encoders_reached(COUNTS3, COUNTS3)) {
                     reset_encoders();
-
                     set_drive_power(0f, 0f);
-
                     v_state++;
-                    break;
                 }
+                break;
             case 9:
-                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0) {
                     v_state++;
+                }
                 break;
             case 10:
                 telemetry.addData("Case 10", "Hello, World!");
@@ -195,26 +195,28 @@ public class NewAuto extends PushBotHardware
                 set_drive_power(0f, 0f);
                 sensorGyro.calibrate();
                 set_drive_power(0.875f, 1f);
-                if (xVal >= 45)
-                {
+                if (xVal >= 45) {
                     reset_encoders();
                     set_drive_power(0f, 0f);
                     v_state++;
                     break;
                 }
             case 11:
-                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0)
+                if (rightMotor.getTargetPosition() == 0 && leftMotor.getTargetPosition() == 0) {
                     v_state++;
+                }
                 break;
             case 12:
                 run_using_encoders();
                 set_drive_power(0f, 0f);
                 v_state++;
                 break;
+            default:
+                telemetry.addData("Status", "default");
+                break;
         }
-        telemetry.addData("Status", "" + v_state);
-        if (v_state >= 12)
-        {
+        telemetry.addData("Status", v_state);
+        if (v_state >= 12) {
             telemetry.addData("Status", "Done");
         }
         update_telemetry(); // Update common telemetry
