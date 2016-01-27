@@ -85,7 +85,7 @@ public class BasicAuto extends PushBotTelemetry
         leftServo.setPosition(0);
         rightServo.setPosition(0);
         armServo.setPosition(0);
-        reset_encoders();
+        resetEncoders();
 
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
@@ -110,13 +110,13 @@ public class BasicAuto extends PushBotTelemetry
 //        while (gyro.isCalibrating()) {
 //            Thread.sleep(50);
 //        }
-        reset_encoders();
+        resetEncoders();
 
         switch (v_state)
         {
             case 0:
                 //reset drive encoders
-                reset_encoders();
+                resetEncoders();
 
                 // Transition to the next state when this method is called again.
                 v_state++;
@@ -128,7 +128,7 @@ public class BasicAuto extends PushBotTelemetry
 
                 if (a_left_encoder_count() >= COUNTS1 && a_right_encoder_count() >= COUNTS1)
                 {
-                    reset_encoders();
+                    resetEncoders();
 
                     set_drive_power(0f, 0f);
 
@@ -145,7 +145,7 @@ public class BasicAuto extends PushBotTelemetry
                 if (have_drive_encoders_reached(COUNTS2, COUNTS2))
                 {
                     set_drive_power (0.0f, 0.0f);
-                    reset_encoders();
+                    resetEncoders();
                     v_state++;
                 }
                 break;
@@ -158,7 +158,7 @@ public class BasicAuto extends PushBotTelemetry
                 set_drive_power(1f, 1f);
                 if (have_drive_encoders_reached(COUNTS3, COUNTS3))
                 {
-                    reset_encoders();
+                    resetEncoders();
 
                     set_drive_power(0f, 0f);
 
@@ -174,7 +174,7 @@ public class BasicAuto extends PushBotTelemetry
                 set_drive_power(0.875f, 1f);
 //                if (xVal == 45)
 //                {
-//                    reset_encoders();
+//                    resetEncoders();
 //
 //                    set_drive_power(0f, 0f);
 //
@@ -222,16 +222,22 @@ public class BasicAuto extends PushBotTelemetry
 //        telemetry.addData("6. z", String.format("%03d", zVal));
 //        telemetry.addData("7. h", String.format("%03d", heading));
     }
-    public void reset_encoders () {
-        reset_left_drive_encoder();
-        reset_right_drive_encoder();
-//        this.leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-//        this.rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-//
-//        this.leftMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-//        this.rightMotor.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+    void resetEncoders() throws InterruptedException {
+        double x = 0;
 
-    }
+        leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+        rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+
+        while (rightMotor.getTargetPosition() != 0 && leftMotor.getTargetPosition() != 0){
+            telemetry.addData("Step", "resetEncoders Loop");
+            telemetry.addData("Left Position", leftMotor.getCurrentPosition());
+            telemetry.addData("Right Position", rightMotor.getCurrentPosition());
+            x++;
+        }
+        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
+        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
+
+    } // End resetEncoders
 
 }
 

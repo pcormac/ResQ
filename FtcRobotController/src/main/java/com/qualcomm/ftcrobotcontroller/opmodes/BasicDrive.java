@@ -34,9 +34,11 @@ public class BasicDrive extends PushBotTelemetry {
     DcMotor rightMotor;
     DcMotor arm;
     DcMotor wormy;
+    DcMotorController winch;
     Servo leftServo;
     Servo rightServo;
     Servo armServo;
+    Servo plow;
 
     @Override
     public void init() {
@@ -48,6 +50,8 @@ public class BasicDrive extends PushBotTelemetry {
         leftServo = hardwareMap.servo.get("left_servo");
         rightServo = hardwareMap.servo.get("right_servo");
         armServo = hardwareMap.servo.get("arm_servo");
+        plow = hardwareMap.servo.get("plow_servo");
+        winch = hardwareMap.dcMotor.get("winch");
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
@@ -56,6 +60,10 @@ public class BasicDrive extends PushBotTelemetry {
         leftServo.setPosition(0);
         rightServo.setPosition(0);
         armServo.setPosition(1);
+
+        leftServo.scaleRange(0, 1);
+        rightServo.scaleRange(0, 1);
+        armServo.scaleRange(0, 1);
     }
 
     @Override
@@ -76,47 +84,45 @@ public class BasicDrive extends PushBotTelemetry {
         leftMotor.setPower(leftPower);
         rightMotor.setPower(rightPower);
 
-        // wormgear
-        if (gamepad1.a)
+        //worm gear
+        float worm = gamepad1.right_stick_y;
+        worm = Range.clip(worm, -1, 1);
+        wormy.setPower(worm);
+
+        //plow
+        if (gamepad1.x)
         {
-            wormy.setPower(.25);
+            plow.setPosition(0);
         }
-        else if (gamepad1.b)
+        else if (gamepad1.y)
         {
-            wormy.setPower(-.25);
-        }
-        else
-        {
-            wormy.setPower(0);
+            plow.setPosition(1);
         }
 
-        // arm
-        if (gamepad2.x)
-        {
-            arm.setPower(1.00);
-        }
-        else if (gamepad2.y)
-        {
-            arm.setPower(-1.00);
-        }
-        else {
-            arm.setPower(0);
-        }
+        float armVal = gamepad2.right_stick_y;
+        armVal = Range.clip(armVal, -1, 1);
+        arm.setPower(armVal);
 
         // servos
         if (gamepad2.a)
         {
             leftServo.setPosition(1);
-            rightServo.setPosition(1);
         }
         else
         {
             leftServo.setPosition(0);
+        }
+        if (gamepad2.b)
+        {
+            rightServo.setPosition(1);
+        }
+        else
+        {
             rightServo.setPosition(0);
         }
 
         //arm servo
-        if (gamepad2.b)
+        if (gamepad2.x)
         {
             armServo.setPosition(0);
         }
