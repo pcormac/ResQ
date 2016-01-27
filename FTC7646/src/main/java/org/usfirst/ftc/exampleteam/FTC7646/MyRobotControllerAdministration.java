@@ -1,4 +1,4 @@
-package org.usfirst.ftc.exampleteam.yourcodehere;
+package org.usfirst.ftc.exampleteam.FTC7646;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import org.swerverobotics.library.SwerveUtil;
 import org.swerverobotics.library.interfaces.*;
 import org.swerverobotics.library.examples.*;
+import org.usfirst.ftc.exampleteam.yourcodehere.R;
+
 import com.qualcomm.ftcrobotcontroller.opmodes.*;
 
 /**

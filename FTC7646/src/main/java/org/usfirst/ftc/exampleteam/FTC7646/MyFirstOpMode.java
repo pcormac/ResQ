@@ -1,4 +1,4 @@
-package org.usfirst.ftc.exampleteam.yourcodehere;
+package org.usfirst.ftc.exampleteam.FTC7646;
 
 import com.qualcomm.robotcore.hardware.*;
 import org.swerverobotics.library.*;
