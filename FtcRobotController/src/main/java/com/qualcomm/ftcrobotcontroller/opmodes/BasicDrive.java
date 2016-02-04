@@ -62,8 +62,8 @@ public class BasicDrive extends PushBotTelemetry {
         leftServo.scaleRange(0, 1);
         rightServo.scaleRange(0, 1);
 
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
+        leftServo.setPosition(.1);
+        rightServo.setPosition(.1);
         armServo.setPosition(0);
     }
 
@@ -141,7 +141,7 @@ public class BasicDrive extends PushBotTelemetry {
         }
         else
         {
-            leftServo.setPosition(0);
+            leftServo.setPosition(.1);
         }
         if (gamepad2.b)
         {
@@ -149,7 +149,7 @@ public class BasicDrive extends PushBotTelemetry {
         }
         else
         {
-            rightServo.setPosition(0);
+            rightServo.setPosition(.1);
         }
         float armVal = gamepad2.right_stick_y;
         armVal = Range.clip(armVal, -1, 1);
