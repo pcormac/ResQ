@@ -222,22 +222,105 @@ public class BasicAuto extends PushBotTelemetry
 //        telemetry.addData("6. z", String.format("%03d", zVal));
 //        telemetry.addData("7. h", String.format("%03d", heading));
     }
-    void resetEncoders() throws InterruptedException {
+    void resetEncoders() {
         double x = 0;
-
         leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
         rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-
-        while (rightMotor.getTargetPosition() != 0 && leftMotor.getTargetPosition() != 0){
-            telemetry.addData("Step", "resetEncoders Loop");
-            telemetry.addData("Left Position", leftMotor.getCurrentPosition());
-            telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-            x++;
+        try {
+            while (rightMotor.getTargetPosition() != 0 && leftMotor.getTargetPosition() != 0) {
+                telemetry.addData("Step", "resetEncoders Loop");
+                telemetry.addData("Left Position", leftMotor.getCurrentPosition());
+                telemetry.addData("Right Position", rightMotor.getCurrentPosition());
+                Thread.sleep(10);
+                x++;
+            }
+        }
+        catch (InterruptedException e){
+            // Restore the interrupted status
+            Thread.currentThread().interrupt();
         }
         telemetry.addData("Left Position", leftMotor.getCurrentPosition());
         telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-
     } // End resetEncoders
+    void driveToDistance(int distance) throws InterruptedException {
+        double leftPosition;
+        double rightPosition;
+        double saveleftPosition = distance;
+        double saveRightPosition = distance;
 
+        if (distance == 0)
+            return;
+        leftMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        leftMotor.setTargetPosition(distance);
+        rightMotor.setTargetPosition(distance);
+        leftMotor.setPower(0.75);
+        rightMotor.setPower(0.75);
+
+        while (Math.abs(rightMotor.getCurrentPosition()) < Math.abs(distance) &&
+                Math.abs(leftMotor.getCurrentPosition()) < Math.abs(distance)) {
+            telemetry.addData("Step", "driveDistanceLoop");
+            leftPosition = leftMotor.getCurrentPosition();
+            rightPosition = rightMotor.getCurrentPosition();
+            telemetry.addData("Left Position", leftPosition);
+            telemetry.addData("Right Position", rightPosition);
+            if ((leftPosition == saveleftPosition && Math.abs(leftPosition)+5 >= Math.abs(distance)) ||
+                    (rightPosition == saveRightPosition && Math.abs(rightPosition)+5 >= Math.abs(distance))) {
+                break;
+            }
+            saveleftPosition = leftPosition;
+            saveRightPosition = rightPosition;
+        } //End While
+
+        telemetry.addData("Step", "driveDistanceExitLoop");
+        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
+        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
+
+        resetEncoders();
+
+    } // End driveToDistance
+
+    //*************************************************
+//  turnDistance
+//*************************************************
+    void turnDistance(int leftDistance, int rightDistance) throws InterruptedException {
+        double leftPosition;
+        double rightPosition;
+        double saveleftPosition = leftDistance;
+        double saveRightPosition = rightDistance;
+
+        if (leftDistance == 0)
+            return;
+
+        leftMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        rightMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
+        leftMotor.setTargetPosition(leftDistance);
+        rightMotor.setTargetPosition(rightDistance);
+        leftMotor.setPower(0.5);
+        rightMotor.setPower(0.5);
+
+        while (Math.abs(leftMotor.getCurrentPosition()) < Math.abs(leftDistance) &&
+                Math.abs(rightMotor.getCurrentPosition()) < Math.abs(rightDistance)) {
+            telemetry.addData("Step", "turnDistanceLoop");
+            leftPosition = leftMotor.getCurrentPosition();
+            rightPosition = rightMotor.getCurrentPosition();
+            telemetry.addData("Left Position", leftPosition);
+            telemetry.addData("Right Position", rightPosition);
+            if ((leftPosition == saveleftPosition && Math.abs(leftPosition)+5 >= Math.abs(leftDistance)) ||
+                    (rightPosition == saveRightPosition && Math.abs(rightPosition)+5 >= Math.abs(rightDistance))) {
+                break;
+            }
+            saveleftPosition = leftPosition;
+            saveRightPosition = rightPosition;
+        }
+
+        telemetry.addData("Step", "turnDistanceExitLoop");
+        leftPosition = leftMotor.getCurrentPosition();
+        rightPosition = rightMotor.getCurrentPosition();
+        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
+        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
+        resetEncoders();
+
+    } // End turnDistance
 }
 

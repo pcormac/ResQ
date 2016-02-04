@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by Cormac on 11/2/2015.
  */
-public class BasicDrive extends PushBotTelemetry {
+public class BasicDriveT extends PushBotTelemetry {
 
-    public BasicDrive ()
+    public BasicDriveT ()
 
     {
         //
@@ -98,12 +98,11 @@ public class BasicDrive extends PushBotTelemetry {
                 RB
          */
         //DRIVE
-        float xValue = gamepad1.left_stick_x;
-        float yValue = -gamepad1.left_stick_y;
+        float leftVal = -gamepad1.left_stick_y;
+        float rightVal = -gamepad1.right_stick_y;
         // calc value for each motor
-        float leftPower = yValue + xValue;
-        float rightPower = yValue - xValue;
-        // clip range aka set max and min
+        float leftPower = leftVal;
+        float rightPower = rightVal;
         leftPower = Range.clip(leftPower, -1, 1);
         rightPower = Range.clip(rightPower, -1, 1);
         // set_drive_power (leftPower, rightPower);
@@ -114,8 +113,17 @@ public class BasicDrive extends PushBotTelemetry {
         //worm gear
         float worm = gamepad1.right_stick_y;
         worm = Range.clip(worm, -1, 1);
-        wormy.setPower(worm);
-
+        if (gamepad1.b)
+        {
+            wormy.setPower(1);
+        }
+        else if (gamepad1.a)
+        {
+            wormy.setPower(-1);
+        }
+        else {
+            wormy.setPower(0);
+        }
         //plow
         if (gamepad1.x)
         {
@@ -125,7 +133,7 @@ public class BasicDrive extends PushBotTelemetry {
         {
             plow.setPosition(1);
         }
-
+        /*
         if (gamepad1.a)
         {
             winch.setPower(1);
@@ -134,6 +142,7 @@ public class BasicDrive extends PushBotTelemetry {
         {
             winch.setPower(0);
         }
+        */
         // servos
         if (gamepad2.a)
         {
