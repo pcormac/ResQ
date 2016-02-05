@@ -133,16 +133,19 @@ public class BasicDriveT extends PushBotTelemetry {
         {
             plow.setPosition(1);
         }
-        /*
-        if (gamepad1.a)
+        if (gamepad2.y)
         {
             winch.setPower(1);
+        }
+        else if (gamepad2.x)
+        {
+            winch.setPower(-.5);
         }
         else
         {
             winch.setPower(0);
         }
-        */
+
         // servos
         if (gamepad2.a)
         {
@@ -164,15 +167,12 @@ public class BasicDriveT extends PushBotTelemetry {
         armVal = Range.clip(armVal, -1, 1);
         arm.setPower(armVal);
         //arm servo
-        if (gamepad2.x)
-        {
-            armServo.setPosition(.7);
+        float servoarmVal = -gamepad2.left_stick_y;
+        servoarmVal = Range.clip(servoarmVal, 0, 1);
+        armServo.setPosition(servoarmVal);
+        if (servoarmVal != 0 && servoarmVal <=.05) {
+            servoarmVal = 0;
         }
-        else
-        {
-            armServo.setPosition(0);
-        }
-
         update_telemetry(); // Update common telemetry
         update_gamepad_telemetry();
     }

@@ -14,9 +14,9 @@ import com.qualcomm.ftcrobotcontroller.opmodes.navXDriveStraightPIDLoopOp;
 /**
  * Created by Cormac on 12/3/2015.
  */
-public class CompBlue extends PushBotTelemetry
+public class CompRed extends PushBotTelemetry
 {
-    public CompBlue () {}
+    public CompRed () {}
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor arm;
@@ -24,7 +24,6 @@ public class CompBlue extends PushBotTelemetry
     Servo leftServo;
     Servo rightServo;
     Servo armServo;
-    //   GyroSensor gyro;
 
     private final int NAVX_DIM_I2C_PORT = 0;
     private AHRS navx_device;
@@ -123,7 +122,7 @@ public class CompBlue extends PushBotTelemetry
 //        while (gyro.isCalibrating()) {
 //            Thread.sleep(50);
 //        }
-        //resetEncoders();
+        resetEncoders();
 
         switch (v_state)
         {
@@ -145,7 +144,7 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 2:
-                TARGET_ANGLE_DEGREES = 45.0;
+                TARGET_ANGLE_DEGREES = -45.0;
                 turn_to_angle();
                 v_state++;
                 break;
