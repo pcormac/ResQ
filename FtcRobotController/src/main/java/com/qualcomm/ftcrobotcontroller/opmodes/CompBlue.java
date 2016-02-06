@@ -119,7 +119,7 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 1:
-                TOTAL_RUN_TIME = 10.0;
+                TOTAL_RUN_TIME = 5.0;
                 runtime.reset();
                 drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
@@ -131,17 +131,22 @@ public class CompBlue extends PushBotTelemetry
                 break;
             case 3:
                 runtime.reset();
-                TOTAL_RUN_TIME = 1500; //1.5+9.5
+                TOTAL_RUN_TIME = 3; //1.5+9.5
                 drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
             case 4:
-                runtime.reset();
-                TOTAL_RUN_TIME = 1500;//11+1.5
-                drive_straight_lin(TOTAL_RUN_TIME);
+                TARGET_ANGLE_DEGREES = 45.0;
+                turn_to_angle(TARGET_ANGLE_DEGREES);
                 v_state++;
                 break;
             case 5:
+                runtime.reset();
+                TOTAL_RUN_TIME = 2; //11+1.5
+                drive_straight_lin(TOTAL_RUN_TIME);
+                v_state++;
+                break;
+            case 6:
                 armServo.setPosition(.7);
                 try {
                     Thread.sleep(500); //1/2 sec
@@ -153,20 +158,36 @@ public class CompBlue extends PushBotTelemetry
                 turn_to_angle(TARGET_ANGLE_DEGREES);
                 v_state++;
                 break;
-            case 6:
-                runtime.reset();
-                TOTAL_RUN_TIME = 15.00;
-                drive_straight_backwards_lin();
-                v_state++;
-                break;
             case 7:
                 runtime.reset();
-                TOTAL_RUN_TIME = 15.00;
+                TOTAL_RUN_TIME = 4;
+                drive_straight_backwards_lin(TOTAL_RUN_TIME);
+                v_state++;
+                break;
+            case 8:
+                TARGET_ANGLE_DEGREES = -45.0;
+                turn_to_angle(TARGET_ANGLE_DEGREES);
+                v_state++;
+                break;
+            case 9:
+                runtime.reset();
+                TOTAL_RUN_TIME = 4;
+                drive_straight_lin(TOTAL_RUN_TIME);
+                v_state++;
+                break;
+            case 10:
+                TARGET_ANGLE_DEGREES = -5.0;
+                turn_to_angle(TARGET_ANGLE_DEGREES);
+                v_state++;
+                break;
+            case 11:
+                runtime.reset();
+                TOTAL_RUN_TIME = 5;
                 drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
         }
-//        update_telemetry(); // Update common telemetry
+        update_telemetry(); // Update common telemetry
     }
     public void update_telemetry ()
 
@@ -181,15 +202,11 @@ public class CompBlue extends PushBotTelemetry
                 ("01"
                         , "Left Drive: "
                                 + a_left_drive_power()
-                                + ", "
-                                + a_left_encoder_count()
-                );
+                 );
         telemetry.addData
                 ("02"
                         , "Right Drive: "
                                 + a_right_drive_power()
-                                + ", "
-                                + a_right_encoder_count()
                 );
         telemetry.addData("Case:", v_state);
     }
@@ -303,7 +320,7 @@ public class CompBlue extends PushBotTelemetry
             Thread.currentThread().interrupt();
         }
     }
-    public void drive_straight_backwards_lin (){
+    public void drive_straight_backwards_lin (double TOTAL_RUN_TIME){
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = -0.5;
         try {
