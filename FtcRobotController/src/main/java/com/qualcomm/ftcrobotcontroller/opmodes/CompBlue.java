@@ -39,7 +39,7 @@ public class CompBlue extends PushBotTelemetry
     private final double YAW_PID_P = 0.005;
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
-    private double TOTAL_RUN_TIME_SECONDS = 0;
+    private double TOTAL_RUN_TIME = 0;
     private double run_time = 0;
 
     private boolean calibration_complete = false;
@@ -87,17 +87,12 @@ public class CompBlue extends PushBotTelemetry
         arm.setDirection(DcMotor.Direction.REVERSE);
         rightServo.setDirection(Servo.Direction.REVERSE);
 
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
+        leftServo.setPosition(.1);
+        rightServo.setPosition(.1);
         armServo.setPosition(0);
 
         hardwareMap.logDevices();
-
-        leftServo.setPosition(0);
-        rightServo.setPosition(0);
-        armServo.setPosition(0);
-        resetEncoders();
-
+        
         update_telemetry(); // Update common telemetry
 
     }
@@ -131,7 +126,7 @@ public class CompBlue extends PushBotTelemetry
                 leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
                 rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
                 try {
-                    Thread.sleep(8000); //8 sec
+                    Thread.sleep(1000); //8 sec
                 }
                 catch (InterruptedException e){
                     e.printStackTrace();
@@ -140,8 +135,9 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 1:
-                TOTAL_RUN_TIME_SECONDS = 9.5; //1.5+8
-                drive_straight_lin();
+                TOTAL_RUN_TIME = 1500;
+                runtime.reset();
+                drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
             case 2:
@@ -150,13 +146,15 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 3:
-                TOTAL_RUN_TIME_SECONDS = 11; //1.5+9.5
-                drive_straight_lin();
+                runtime.reset();
+                TOTAL_RUN_TIME = 1500; //1.5+9.5
+                drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
             case 4:
-                TOTAL_RUN_TIME_SECONDS = 12.5;//11+1.5
-                drive_straight_lin();
+                runtime.reset();
+                TOTAL_RUN_TIME = 1500;//11+1.5
+                drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
             case 5:
@@ -172,13 +170,15 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 6:
-                TOTAL_RUN_TIME_SECONDS = 1.5;
+                runtime.reset();
+                TOTAL_RUN_TIME = 1500;
                 drive_straight_backwards_lin();
                 v_state++;
                 break;
             case 7:
-                TOTAL_RUN_TIME_SECONDS = 1.5;
-                drive_straight_lin();
+                runtime.reset();
+                TOTAL_RUN_TIME = 1500;
+                drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
         }
@@ -207,6 +207,7 @@ public class CompBlue extends PushBotTelemetry
                                 + ", "
                                 + a_right_encoder_count()
                 );
+        telemetry.addData("Case:", v_state);
     }
     void resetEncoders() {
         leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -270,11 +271,12 @@ public class CompBlue extends PushBotTelemetry
             telemetry.addData("Yaw", df.format(navx_device.getYaw()));
         }
     }
-    public void drive_straight_lin (){
+    
+    public void drive_straight_lin(double TOTAL_RUN_TIME){
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = 0.5;
         try {
-            while ((runtime.time() < TOTAL_RUN_TIME_SECONDS) &&
+            while ((runtime.time() < TOTAL_RUN_TIME) &&
                     !Thread.currentThread().isInterrupted()) {
                 if (yawPIDController.waitForNewUpdate(yawPIDResult, DEVICE_TIMEOUT_MS)) {
                     if (yawPIDResult.isOnTarget()) {
@@ -304,7 +306,7 @@ public class CompBlue extends PushBotTelemetry
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = -0.5;
         try {
-            while ((runtime.time() < TOTAL_RUN_TIME_SECONDS) &&
+            while ((runtime.time() < TOTAL_RUN_TIME) &&
                     !Thread.currentThread().isInterrupted()) {
                 if (yawPIDController.waitForNewUpdate(yawPIDResult, DEVICE_TIMEOUT_MS)) {
                     if (yawPIDResult.isOnTarget()) {
