@@ -85,27 +85,9 @@ public class CompBlue extends PushBotTelemetry
         yawPIDResult = new navXPIDController.PIDResult();
     }
 
-    @Override public void loop()
+    @Override public void loop() {
 
-//    public void runOpMode() throws InterruptedException
-    {
-        // get the x, y, and z values (rate of change of angle).
-
-        // get the heading info.
-        // the Modern Robotics' gyro sensor keeps
-        // track of the current heading for the Z axis only.
-//        heading = gyro.getHeading();
-//        telemetry.addData("1. x", String.format("%03d", xVal));
-//        telemetry.addData("2. y", String.format("%03d", yVal));
-//        telemetry.addData("3. z", String.format("%03d", zVal));
-//        telemetry.addData("4. h", String.format("%03d", heading));
-//        while (gyro.isCalibrating()) {
-//            Thread.sleep(50);
-//        }
-        //resetEncoders();
-
-        switch (v_state)
-        {
+        switch (v_state) {
             case 0:
 //                leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
 //                rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -189,9 +171,8 @@ public class CompBlue extends PushBotTelemetry
         }
         update_telemetry(); // Update common telemetry
     }
-    public void update_telemetry ()
 
-    {
+    public void update_telemetry () {
         if (a_warning_generated()) {
             set_first_message(a_warning_message());
         }
@@ -210,24 +191,6 @@ public class CompBlue extends PushBotTelemetry
                 );
         telemetry.addData("Case:", v_state);
     }
-    void resetEncoders() {
-        leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        try {
-            while (rightMotor.getTargetPosition() != 0 && leftMotor.getTargetPosition() != 0) {
-                telemetry.addData("Step", "resetEncoders Loop");
-                telemetry.addData("Left Position", leftMotor.getCurrentPosition());
-                telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-                Thread.sleep(10);
-            }
-        }
-        catch (InterruptedException e){
-            // Restore the interrupted status
-            Thread.currentThread().interrupt();
-        }
-        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
-        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-    } // End resetEncoders
 
     public void drive_straight(){
         TARGET_ANGLE_DEGREES = 0;
@@ -320,7 +283,8 @@ public class CompBlue extends PushBotTelemetry
             Thread.currentThread().interrupt();
         }
     }
-    public void drive_straight_backwards_lin (double TOTAL_RUN_TIME){
+
+    public void drive_straight_backwards_lin (double TOTAL_RUN_TIME) {
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = -0.5;
         try {
@@ -350,7 +314,8 @@ public class CompBlue extends PushBotTelemetry
             Thread.currentThread().interrupt();
         }
     }
-    public void turn_to_angle (double TARGET_ANGLE_DEGREES){
+
+    public void turn_to_angle (double TARGET_ANGLE_DEGREES) {
         if ( !calibration_complete ) {
             /* navX-Micro Calibration completes automatically ~15 seconds after it is
             powered on, as long as the device is still.  To handle the case where the
