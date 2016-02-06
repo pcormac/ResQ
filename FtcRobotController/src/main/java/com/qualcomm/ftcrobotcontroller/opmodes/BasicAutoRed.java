@@ -117,7 +117,6 @@ public class BasicAutoRed extends PushBotTelemetry
         resetEncoders();
 
         update_telemetry(); // Update common telemetry
-        update_gamepad_telemetry();
 
     }
     @Override public void start() {
@@ -354,7 +353,6 @@ public class BasicAutoRed extends PushBotTelemetry
             */
         }
         update_telemetry(); // Update common telemetry
-        update_gamepad_telemetry();
     }
     public void update_telemetry ()
 
