@@ -6,6 +6,7 @@ import com.kauailabs.navx.ftc.AHRS;
 import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.text.DecimalFormat;
@@ -24,7 +25,6 @@ public class CompBlue extends PushBotTelemetry
     Servo leftServo;
     Servo rightServo;
     Servo armServo;
-    //   GyroSensor gyro;
 
     private final int NAVX_DIM_I2C_PORT = 0;
     private AHRS navx_device;
@@ -40,6 +40,7 @@ public class CompBlue extends PushBotTelemetry
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
     private double TOTAL_RUN_TIME_SECONDS = 0;
+    private double run_time = 0;
 
     private boolean calibration_complete = false;
 
@@ -98,7 +99,7 @@ public class CompBlue extends PushBotTelemetry
         resetEncoders();
 
         update_telemetry(); // Update common telemetry
-        update_gamepad_telemetry();
+        //update_gamepad_telemetry();
 
     }
     @Override public void start() {
@@ -140,7 +141,7 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 1:
-                TOTAL_RUN_TIME_SECONDS = 4;
+                TOTAL_RUN_TIME_SECONDS = 9.5; //1.5+8
                 drive_straight_lin();
                 v_state++;
                 break;
@@ -150,28 +151,40 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 3:
-                TOTAL_RUN_TIME_SECONDS = 4;
+                TOTAL_RUN_TIME_SECONDS = 11; //1.5+9.5
                 drive_straight_lin();
                 v_state++;
                 break;
             case 4:
-                TOTAL_RUN_TIME_SECONDS = 4;
+                TOTAL_RUN_TIME_SECONDS = 12.5;//11+1.5
                 drive_straight_lin();
                 v_state++;
                 break;
             case 5:
-                TOTAL_RUN_TIME_SECONDS = 4;
-                drive_straight_lin();
+                armServo.setPosition(.7);
+                try {
+                    Thread.sleep(500); //1/2 sec
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                TARGET_ANGLE_DEGREES = 180;
+                turn_to_angle();
                 v_state++;
                 break;
             case 6:
-                TOTAL_RUN_TIME_SECONDS = 4;
+                TOTAL_RUN_TIME_SECONDS = 1.5;
+                drive_straight_backwards_lin();
+                v_state++;
+                break;
+            case 7:
+                TOTAL_RUN_TIME_SECONDS = 1.5;
                 drive_straight_lin();
                 v_state++;
                 break;
         }
         update_telemetry(); // Update common telemetry
-        update_gamepad_telemetry();
+        //update_gamepad_telemetry();
     }
     public void update_telemetry ()
 
@@ -215,86 +228,7 @@ public class CompBlue extends PushBotTelemetry
         telemetry.addData("Left Position", leftMotor.getCurrentPosition());
         telemetry.addData("Right Position", rightMotor.getCurrentPosition());
     } // End resetEncoders
-    void driveToDistance(int distance) throws InterruptedException {
-        double leftPosition;
-        double rightPosition;
-        double saveleftPosition = distance;
-        double saveRightPosition = distance;
 
-        if (distance == 0)
-            return;
-        leftMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        leftMotor.setTargetPosition(distance);
-        rightMotor.setTargetPosition(distance);
-        leftMotor.setPower(0.75);
-        rightMotor.setPower(0.75);
-
-        while (Math.abs(rightMotor.getCurrentPosition()) < Math.abs(distance) &&
-                Math.abs(leftMotor.getCurrentPosition()) < Math.abs(distance)) {
-            telemetry.addData("Step", "driveDistanceLoop");
-            leftPosition = leftMotor.getCurrentPosition();
-            rightPosition = rightMotor.getCurrentPosition();
-            telemetry.addData("Left Position", leftPosition);
-            telemetry.addData("Right Position", rightPosition);
-            if ((leftPosition == saveleftPosition && Math.abs(leftPosition)+5 >= Math.abs(distance)) ||
-                    (rightPosition == saveRightPosition && Math.abs(rightPosition)+5 >= Math.abs(distance))) {
-                break;
-            }
-            saveleftPosition = leftPosition;
-            saveRightPosition = rightPosition;
-        } //End While
-
-        telemetry.addData("Step", "driveDistanceExitLoop");
-        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
-        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-
-        resetEncoders();
-
-    } // End driveToDistance
-
-    //*************************************************
-//  turnDistance
-//*************************************************
-    void turnDistance(int leftDistance, int rightDistance) throws InterruptedException {
-        double leftPosition;
-        double rightPosition;
-        double saveleftPosition = leftDistance;
-        double saveRightPosition = rightDistance;
-
-        if (leftDistance == 0)
-            return;
-
-        leftMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        rightMotor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-        leftMotor.setTargetPosition(leftDistance);
-        rightMotor.setTargetPosition(rightDistance);
-        leftMotor.setPower(0.5);
-        rightMotor.setPower(0.5);
-
-        while (Math.abs(leftMotor.getCurrentPosition()) < Math.abs(leftDistance) &&
-                Math.abs(rightMotor.getCurrentPosition()) < Math.abs(rightDistance)) {
-            telemetry.addData("Step", "turnDistanceLoop");
-            leftPosition = leftMotor.getCurrentPosition();
-            rightPosition = rightMotor.getCurrentPosition();
-            telemetry.addData("Left Position", leftPosition);
-            telemetry.addData("Right Position", rightPosition);
-            if ((leftPosition == saveleftPosition && Math.abs(leftPosition)+5 >= Math.abs(leftDistance)) ||
-                    (rightPosition == saveRightPosition && Math.abs(rightPosition)+5 >= Math.abs(rightDistance))) {
-                break;
-            }
-            saveleftPosition = leftPosition;
-            saveRightPosition = rightPosition;
-        }
-
-        telemetry.addData("Step", "turnDistanceExitLoop");
-        leftPosition = leftMotor.getCurrentPosition();
-        rightPosition = rightMotor.getCurrentPosition();
-        telemetry.addData("Left Position", leftMotor.getCurrentPosition());
-        telemetry.addData("Right Position", rightMotor.getCurrentPosition());
-        resetEncoders();
-
-    }
     public void drive_straight(){
         TARGET_ANGLE_DEGREES = 0;
         if ( !calibration_complete ) {
@@ -368,6 +302,36 @@ public class CompBlue extends PushBotTelemetry
             Thread.currentThread().interrupt();
         }
     }
+    public void drive_straight_backwards_lin (){
+        int DEVICE_TIMEOUT_MS = 500;
+        double drive_speed = -0.5;
+        try {
+            while ((runtime.time() < TOTAL_RUN_TIME_SECONDS) &&
+                    !Thread.currentThread().isInterrupted()) {
+                if (yawPIDController.waitForNewUpdate(yawPIDResult, DEVICE_TIMEOUT_MS)) {
+                    if (yawPIDResult.isOnTarget()) {
+                        leftMotor.setPower(drive_speed);
+                        rightMotor.setPower(drive_speed);
+                        telemetry.addData("PIDOutput", df.format(drive_speed) + ", " +
+                                df.format(drive_speed));
+                    } else {
+                        double output = yawPIDResult.getOutput();
+                        leftMotor.setPower(drive_speed - output);
+                        rightMotor.setPower(drive_speed + output);
+                        telemetry.addData("PIDOutput", df.format(limit(drive_speed + output)) + ", " +
+                                df.format(limit(drive_speed - output)));
+                    }
+                    telemetry.addData("Yaw", df.format(navx_device.getYaw()));
+                } else{
+			        /* A timeout occurred */
+                    Log.w("navXDriveStraightOp", "Yaw PID waitForNewUpdate() TIMEOUT.");
+                }
+            }
+        }
+        catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
     public void turn_to_angle (){
         if ( !calibration_complete ) {
             /* navX-Micro Calibration completes automatically ~15 seconds after it is
@@ -400,7 +364,8 @@ public class CompBlue extends PushBotTelemetry
             } else {
             /* No sensor update has been received since the last time  */
             /* the loop() function was invoked.  Therefore, there's no */
-            /* need to update the motors at this time.                 */
+            /* need to update the motors at this time.       3          */
+                telemetry.addData("Gyro", "No new updates");
             }
             telemetry.addData("Yaw", df.format(navx_device.getYaw()));
         }
