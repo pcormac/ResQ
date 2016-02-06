@@ -66,22 +66,6 @@ public class CompBlue extends PushBotTelemetry
         rightServo = hardwareMap.servo.get("right_servo");
         armServo = hardwareMap.servo.get("arm_servo");
 
-        navx_device = AHRS.getInstance(hardwareMap.deviceInterfaceModule.get("dim"),
-                NAVX_DIM_I2C_PORT,
-                AHRS.DeviceDataType.kProcessedData,
-                NAVX_DEVICE_UPDATE_RATE_HZ);
-        /* Create a PID Controller which uses the Yaw Angle as input. */
-        yawPIDController = new navXPIDController( navx_device,
-                navXPIDController.navXTimestampedDataSource.YAW);
-        /* Configure the PID controller */
-        yawPIDController.setSetpoint(TARGET_ANGLE_DEGREES);
-        yawPIDController.setContinuous(true);
-        yawPIDController.setOutputRange(MIN_MOTOR_OUTPUT_VALUE, MAX_MOTOR_OUTPUT_VALUE);
-        yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, TOLERANCE_DEGREES);
-        yawPIDController.setPID(YAW_PID_P, YAW_PID_I, YAW_PID_D);
-        yawPIDController.enable(true);
-        df = new DecimalFormat("#.##");
-
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
@@ -93,7 +77,7 @@ public class CompBlue extends PushBotTelemetry
 
         hardwareMap.logDevices();
         
-        update_telemetry(); // Update common telemetry
+//        update_telemetry(); // Update common telemetry
 
     }
     @Override public void start() {
@@ -123,8 +107,8 @@ public class CompBlue extends PushBotTelemetry
         switch (v_state)
         {
             case 0:
-                leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-                rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+//                leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+//                rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
                 try {
                     Thread.sleep(1000); //8 sec
                 }
@@ -135,14 +119,14 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 1:
-                TOTAL_RUN_TIME = 1500;
+                TOTAL_RUN_TIME = 10.0;
                 runtime.reset();
                 drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
             case 2:
                 TARGET_ANGLE_DEGREES = 45.0;
-                turn_to_angle();
+                turn_to_angle(TARGET_ANGLE_DEGREES);
                 v_state++;
                 break;
             case 3:
@@ -166,23 +150,23 @@ public class CompBlue extends PushBotTelemetry
                     e.printStackTrace();
                 }
                 TARGET_ANGLE_DEGREES = 180;
-                turn_to_angle();
+                turn_to_angle(TARGET_ANGLE_DEGREES);
                 v_state++;
                 break;
             case 6:
                 runtime.reset();
-                TOTAL_RUN_TIME = 1500;
+                TOTAL_RUN_TIME = 15.00;
                 drive_straight_backwards_lin();
                 v_state++;
                 break;
             case 7:
                 runtime.reset();
-                TOTAL_RUN_TIME = 1500;
+                TOTAL_RUN_TIME = 15.00;
                 drive_straight_lin(TOTAL_RUN_TIME);
                 v_state++;
                 break;
         }
-        update_telemetry(); // Update common telemetry
+//        update_telemetry(); // Update common telemetry
     }
     public void update_telemetry ()
 
@@ -275,6 +259,23 @@ public class CompBlue extends PushBotTelemetry
     public void drive_straight_lin(double TOTAL_RUN_TIME){
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = 0.5;
+
+        navx_device = AHRS.getInstance(hardwareMap.deviceInterfaceModule.get("dim"),
+                NAVX_DIM_I2C_PORT,
+                AHRS.DeviceDataType.kProcessedData,
+                NAVX_DEVICE_UPDATE_RATE_HZ);
+        /* Create a PID Controller which uses the Yaw Angle as input. */
+        yawPIDController = new navXPIDController( navx_device,
+                navXPIDController.navXTimestampedDataSource.YAW);
+        /* Configure the PID controller */
+        yawPIDController.setSetpoint(TARGET_ANGLE_DEGREES);
+        yawPIDController.setContinuous(true);
+        yawPIDController.setOutputRange(MIN_MOTOR_OUTPUT_VALUE, MAX_MOTOR_OUTPUT_VALUE);
+        yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, TOLERANCE_DEGREES);
+        yawPIDController.setPID(YAW_PID_P, YAW_PID_I, YAW_PID_D);
+        yawPIDController.enable(true);
+        df = new DecimalFormat("#.##");
+
         try {
             while ((runtime.time() < TOTAL_RUN_TIME) &&
                     !Thread.currentThread().isInterrupted()) {
@@ -332,7 +333,7 @@ public class CompBlue extends PushBotTelemetry
             Thread.currentThread().interrupt();
         }
     }
-    public void turn_to_angle (){
+    public void turn_to_angle (double TARGET_ANGLE_DEGREES){
         if ( !calibration_complete ) {
             /* navX-Micro Calibration completes automatically ~15 seconds after it is
             powered on, as long as the device is still.  To handle the case where the
