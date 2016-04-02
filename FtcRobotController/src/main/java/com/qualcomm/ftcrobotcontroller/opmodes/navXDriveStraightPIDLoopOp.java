@@ -71,10 +71,10 @@ public class navXDriveStraightPIDLoopOp extends OpMode {
     private final byte NAVX_DEVICE_UPDATE_RATE_HZ = 50;
 
     private final double TARGET_ANGLE_DEGREES = 0.0;
-    private final double TOLERANCE_DEGREES = 2.0;
+    private final double TOLERANCE_DEGREES = 0.5;
     private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
     private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
-    private final double YAW_PID_P = 0.005;
+    private final double YAW_PID_P = 0.05;
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
 
@@ -157,10 +157,10 @@ public class navXDriveStraightPIDLoopOp extends OpMode {
                             df.format(drive_speed));
                 } else {
                     double output = yawPIDResult.getOutput();
-                    leftMotor.setPower(limit(drive_speed + output));
-                    rightMotor.setPower(limit(drive_speed - output));
-                    telemetry.addData("Motor Output", df.format(limit(drive_speed + output)) + ", " +
-                            df.format(limit(drive_speed - output)));
+                    leftMotor.setPower(limit(drive_speed + 6*output));
+                    rightMotor.setPower(limit(drive_speed - 6*output));
+                    telemetry.addData("Motor Output", df.format(limit(drive_speed + 6*output)) + ", " +
+                            df.format(limit(drive_speed - 6*output)));
                 }
             } else {
                 /* No sensor update has been received since the last time  */

@@ -1,7 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import android.util.Log;
-
 import com.kauailabs.navx.ftc.AHRS;
 import com.kauailabs.navx.ftc.navXPIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +9,8 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.text.DecimalFormat;
+import java.util.Timer;
+
 import com.qualcomm.ftcrobotcontroller.opmodes.navXDriveStraightPIDLoopOp;
 
 /**
@@ -22,10 +23,9 @@ public class CompBlue extends PushBotTelemetry
     DcMotor rightMotor;
     DcMotor arm;
     DcMotor wormy;
-    Servo leftServo;
-    Servo rightServo;
-    Servo armServo;
-
+    //Servo leftServo;
+    //Servo rightServo;
+    //Servo armServo;
     private final int NAVX_DIM_I2C_PORT = 0;
     private AHRS navx_device;
     private navXPIDController yawPIDController;
@@ -39,11 +39,8 @@ public class CompBlue extends PushBotTelemetry
     private final double YAW_PID_P = 0.005;
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
-    private double TOTAL_RUN_TIME = 0;
-    private double run_time = 0;
-
+    private double TOTAL_RUN_TIME = 1;
     private boolean calibration_complete = false;
-
     navXPIDController.PIDResult yawPIDResult;
     DecimalFormat df;
 
@@ -53,7 +50,6 @@ public class CompBlue extends PushBotTelemetry
         return Math.min(Math.max(a, MIN_MOTOR_OUTPUT_VALUE), MAX_MOTOR_OUTPUT_VALUE);
     }
 
-
     @Override public void init ()
     {
         super.init();
@@ -62,18 +58,18 @@ public class CompBlue extends PushBotTelemetry
         rightMotor = hardwareMap.dcMotor.get("right_drive");
         arm = hardwareMap.dcMotor.get("right_arm");
         wormy = hardwareMap.dcMotor.get("wormy");
-        leftServo = hardwareMap.servo.get("left_servo");
-        rightServo = hardwareMap.servo.get("right_servo");
-        armServo = hardwareMap.servo.get("arm_servo");
+        //leftServo = hardwareMap.servo.get("left_servo");
+        //rightServo = hardwareMap.servo.get("right_servo");
+        //armServo = hardwareMap.servo.get("arm_servo");
 
         //reverse right motor so forward is forward
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         arm.setDirection(DcMotor.Direction.REVERSE);
-        rightServo.setDirection(Servo.Direction.REVERSE);
+        //rightServo.setDirection(Servo.Direction.REVERSE);
 
-        leftServo.setPosition(.1);
-        rightServo.setPosition(.1);
-        armServo.setPosition(0);
+        //leftServo.setPosition(.1);
+        //rightServo.setPosition(.1);
+        //armServo.setPosition(0);
 
         hardwareMap.logDevices();
         
@@ -89,10 +85,9 @@ public class CompBlue extends PushBotTelemetry
 
         switch (v_state) {
             case 0:
-//                leftMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-//                rightMotor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
+                telemetry.addData("Case:", "0");
                 try {
-                    Thread.sleep(1000); //8 sec
+                    runtime.wait(500); //8 sec
                 }
                 catch (InterruptedException e){
                     e.printStackTrace();
@@ -101,72 +96,99 @@ public class CompBlue extends PushBotTelemetry
                 v_state++;
                 break;
             case 1:
+                telemetry.addData("Case:", "1");
                 TOTAL_RUN_TIME = 5.0;
                 runtime.reset();
                 drive_straight_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
                 break;
             case 2:
+                telemetry.addData("Case:", "2");
                 TARGET_ANGLE_DEGREES = 45.0;
                 turn_to_angle(TARGET_ANGLE_DEGREES);
+                update_telemetry();
                 v_state++;
                 break;
             case 3:
+                telemetry.addData("Case:", "3");
                 runtime.reset();
-                TOTAL_RUN_TIME = 3; //1.5+9.5
+                TOTAL_RUN_TIME = 3;
                 drive_straight_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
                 break;
             case 4:
+                telemetry.addData("Case:", "4");
                 TARGET_ANGLE_DEGREES = 45.0;
                 turn_to_angle(TARGET_ANGLE_DEGREES);
+                update_telemetry();
                 v_state++;
                 break;
             case 5:
+                telemetry.addData("Case:", "5");
                 runtime.reset();
                 TOTAL_RUN_TIME = 2; //11+1.5
                 drive_straight_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
                 break;
             case 6:
-                armServo.setPosition(.7);
+                telemetry.addData("Case:", "6");
+                //armServo.setPosition(.7);
                 try {
                     Thread.sleep(500); //1/2 sec
                 }
                 catch (InterruptedException e){
                     e.printStackTrace();
                 }
+                //armServo.setPosition(0);
                 TARGET_ANGLE_DEGREES = 180;
                 turn_to_angle(TARGET_ANGLE_DEGREES);
+                update_telemetry();
                 v_state++;
                 break;
             case 7:
+                telemetry.addData("Case:", "7");
                 runtime.reset();
                 TOTAL_RUN_TIME = 4;
                 drive_straight_backwards_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
                 break;
             case 8:
-                TARGET_ANGLE_DEGREES = -45.0;
+                telemetry.addData("Case:", "8");
+                TARGET_ANGLE_DEGREES = -60.0;
                 turn_to_angle(TARGET_ANGLE_DEGREES);
+                update_telemetry();
                 v_state++;
                 break;
             case 9:
+                telemetry.addData("Case:", "9");
                 runtime.reset();
                 TOTAL_RUN_TIME = 4;
                 drive_straight_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
                 break;
             case 10:
-                TARGET_ANGLE_DEGREES = -5.0;
+                telemetry.addData("Case:", "10");
+                TARGET_ANGLE_DEGREES = 10.0;
                 turn_to_angle(TARGET_ANGLE_DEGREES);
+                update_telemetry();
                 v_state++;
                 break;
             case 11:
+                telemetry.addData("Case:", "11");
                 runtime.reset();
                 TOTAL_RUN_TIME = 5;
                 drive_straight_lin(TOTAL_RUN_TIME);
+                update_telemetry();
                 v_state++;
+                break;
+            case 12:
+                telemetry.addData("Case:", "Done");
+                update_telemetry();
                 break;
         }
         update_telemetry(); // Update common telemetry
@@ -190,6 +212,7 @@ public class CompBlue extends PushBotTelemetry
                                 + a_right_drive_power()
                 );
         telemetry.addData("Case:", v_state);
+        telemetry.addData("Time:", Math.round(getRuntime()));
     }
 
     public void drive_straight(){
@@ -239,7 +262,6 @@ public class CompBlue extends PushBotTelemetry
     public void drive_straight_lin(double TOTAL_RUN_TIME){
         int DEVICE_TIMEOUT_MS = 500;
         double drive_speed = 0.5;
-
         navx_device = AHRS.getInstance(hardwareMap.deviceInterfaceModule.get("dim"),
                 NAVX_DIM_I2C_PORT,
                 AHRS.DeviceDataType.kProcessedData,
@@ -255,7 +277,6 @@ public class CompBlue extends PushBotTelemetry
         yawPIDController.setPID(YAW_PID_P, YAW_PID_I, YAW_PID_D);
         yawPIDController.enable(true);
         df = new DecimalFormat("#.##");
-
         try {
             while ((runtime.time() < TOTAL_RUN_TIME) &&
                     !Thread.currentThread().isInterrupted()) {

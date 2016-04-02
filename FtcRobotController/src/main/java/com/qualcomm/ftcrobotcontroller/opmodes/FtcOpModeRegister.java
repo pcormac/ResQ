@@ -64,6 +64,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("CompBlue", CompBlue.class);
     manager.register("navXProcessedOp", navXProcessedOp.class);
     manager.register("navXRotateToAnglePIDLoopOp", navXRotateToAnglePIDLoopOp.class);
+    manager.register("navXDriveStraightPIDLoopOp", navXDriveStraightPIDLoopOp.class);
 
     /*
      * Uncomment any of the following lines if you want to register an op mode.
